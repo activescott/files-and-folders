@@ -1,0 +1,2 @@
+packages/find-duplicates/tests/*.sh.out
+.DS_Store

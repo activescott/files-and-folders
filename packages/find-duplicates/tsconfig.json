@@ -1,0 +1,20 @@
+{
+  // https://github.com/tsconfig/bases#centralized-recommendations-for-tsconfig-bases
+  "extends": "@tsconfig/node16-strictest-esm/tsconfig.json",
+  "include": ["./src/**/*"],
+  "exclude": [
+    "**/*.test.ts",
+    "dist",
+    "node_modules",
+    "example/**/*",
+    "tests/**/*"
+  ],
+  "compilerOptions": {
+    "outDir": "dist/es",
+    "moduleResolution": "node16",
+    "declaration": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitAny": false
+  }
+}
