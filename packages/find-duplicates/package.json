@@ -4,6 +4,9 @@
   "main": "dist/es/index.js",
   "types": "dist/es/index.d.ts",
   "type": "module",
+  "engines": {
+    "node": ">=16.14.0"
+  },
   "bin": {
     "find-duplicates": "dist/es/index.js"
   },
