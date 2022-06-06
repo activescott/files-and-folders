@@ -1,9 +1,8 @@
 /// <reference types="jest" />
 
-import { test, it, describe } from "@jest/globals"
-import { expect } from "expect"
+import { test, it, describe, expect } from "@jest/globals"
 import print, { PrintOptions } from "./print"
-import StringWriter from "../lib/StringWriter.js"
+import StringWriter from "../../tests/support/StringWriter.js"
 import { resolve } from "node:path"
 import { rm, stat } from "node:fs/promises"
 

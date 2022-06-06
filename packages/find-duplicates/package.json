@@ -4,23 +4,13 @@
   "main": "dist/es/index.js",
   "types": "dist/es/index.d.ts",
   "type": "module",
-  "scripts": {
-    "build:es": "rm -rfd ./dist/es; ./node_modules/.bin/tsc --project tsconfig.json",
-    "build": "rm -rfd ./dist && npm run build:es",
-    "eslint": "./node_modules/.bin/eslint . --ext ts,tsx,js,jsx",
-    "lint": "./node_modules/.bin/prettier -l \"{,!(node_modules)/**/}*.{ts,tsx,md,yml,json,html}\" && npm run eslint",
-    "lint-fix": "./node_modules/.bin/prettier --write \"{,!(node_modules)/**/}*.{ts,tsx,md,yml,json,html}\" && npm run eslint --fix",
-    "test": "./node_modules/.bin/jest --coverage",
-    "te": "./node_modules/.bin/jest",
-    "watch": "./node_modules/.bin/jest --watch --testPathIgnorePatterns performance.spec",
-    "dev": "npm run watch",
-    "pretest": "npm run lint",
-    "coverage-publish": "cat ./coverage/lcov.info | coveralls"
+  "bin": {
+    "find-duplicates": "dist/es/index.js"
   },
   "author": "scott@willeke.com",
   "license": "MIT",
   "dependencies": {
-    "irritable-iterable": "^1.2.0",
+    "irritable-iterable": "^1.3.1",
     "yargs": "^17.5.1"
   },
   "devDependencies": {
@@ -41,5 +31,18 @@
   "directories": {
     "lib": "lib"
   },
-  "description": ""
+  "description": "",
+  "scripts": {
+    "build:es": "rm -rfd ./dist/es; ./node_modules/.bin/tsc --project tsconfig.json",
+    "build": "rm -rfd ./dist && npm run build:es",
+    "eslint": "./node_modules/.bin/eslint . --ext ts,tsx,js,jsx",
+    "lint": "./node_modules/.bin/prettier -l \"{,!(node_modules)/**/}*.{ts,tsx,md,yml,json,html}\" && npm run eslint",
+    "lint-fix": "./node_modules/.bin/prettier --write \"{,!(node_modules)/**/}*.{ts,tsx,md,yml,json,html}\" && npm run eslint --fix",
+    "test": "./node_modules/.bin/jest --coverage",
+    "te": "./node_modules/.bin/jest",
+    "watch": "./node_modules/.bin/jest --watch --testPathIgnorePatterns performance.spec",
+    "dev": "npm run watch",
+    "pretest": "npm run lint",
+    "coverage-publish": "cat ./coverage/lcov.info | coveralls"
+  }
 }

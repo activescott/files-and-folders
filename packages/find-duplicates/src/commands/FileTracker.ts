@@ -1,7 +1,6 @@
 import { getFileSize, hashFile } from "../lib/fs.js"
 import { basename } from "node:path"
 import { filter, map } from "irritable-iterable"
-import type { Chain } from "../../node_modules/irritable-iterable/dist/es/chain.js"
 import { cpus, EOL } from "node:os"
 import type { StreamLogger } from "./StreamLogger.js"
 
@@ -58,7 +57,7 @@ export class FileTracker {
     logger: StreamLogger
   ): AsyncGenerator<string[]> {
     // leverage filePathsBySize to avoid expensive hashing of files unnecessarily (if size is different, obviously hash will be too!)
-    const pathsWithSameSizes: Chain<FileInfo[]> = map(
+    const pathsWithSameSizes: Iterable<FileInfo[]> = map(
       this.filePathsBySize,
       ([, paths]) => paths
     ).filter((paths) => paths.length > 1)

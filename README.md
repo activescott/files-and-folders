@@ -15,29 +15,28 @@ Given a set of paths, find all files that are the same file (by content, ignore 
 
 Requirements:
 
-- [ ] feat: searches multiple input paths
-- [ ] feat: compares files by content, not merely name or size
+- [x] feat: searches multiple input paths
+- [x] feat: compares files by content, not merely name or size
 
   - name same, content different
   - name same, content different, size same
   - name different, content same
 
-- [ ] chore: typescript. because types help (proven to myself yet again)
-- [ ] chore: fix git paths (git dir needs moved up to parent monorepo dir)
-- [ ] feat: optimize perf by tracking all files w/ size instead of hash, and only hash files where size is the same
-- [ ] feat: use deterministic algorithm to classify the "original" and the "duplicate" (i.e. first argument passed in is a higher priority for "original")
+- [x] chore: typescript. because types help (proven to myself yet again)
+- [x] chore: fix git paths (git dir needs moved up to parent monorepo dir)
+- [x] feat: optimize perf by tracking all files w/ size instead of hash, and only hash files where size is the same
+- [x] feat: use deterministic algorithm to classify the "original" and the "duplicate" (i.e. first argument passed in is a higher priority for "original")
 
-  - [ ] test: test-dir/one test-dir/two
-  - [ ] test: test-dir/two test-dir/one
+  - [x] test: test-dir/one test-dir/two
+  - [x] test: test-dir/two test-dir/one
 
 - actions to be taken for each duplicate:
 
-  - [ ] feat: print/dry-run action (no action) for found duplicate: prints to output file or stdout
-  - [ ] feat: delete action for found duplicate
-  - [ ] feat: move file action for found duplicate to specified path
-    - [ ] Use the "original" file's name with a postfixed a counter for uniqueness
+- [x] feat: print/dry-run action (no action) for found duplicate: prints to output file or stdout
 
-- [ ] feat: optimize perf more by doing a file comparison (or partial comparison) before hashing?
+- [ ] feat: move file action for found duplicate to specified path
+  - [ ] Use the "original" file's name with a postfixed a counter for uniqueness
+- [ ] feat: delete action for found duplicate
 
 ### organize-by-date
 
