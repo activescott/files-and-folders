@@ -84,4 +84,4 @@ jobs:
         run: |
           cd ${{ matrix.package_dir }}
           npm install
-          npx semantic-release@19 --branches '["main", {name: "beta", prerelease: true}, {name: "alpha", prerelease: true}]'
+          npx semantic-release@19
