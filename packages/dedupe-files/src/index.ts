@@ -53,7 +53,7 @@ export function main(process: CliProcess): void {
         await print(argv, process.stdout, process.stderr)
       }
     )
-    .scriptName("find-duplicates")
+    .scriptName("dedupe-files")
     .demandCommand()
     .help()
     .parse()

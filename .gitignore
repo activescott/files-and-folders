@@ -1,2 +1,3 @@
-packages/find-duplicates/tests/**/*.sh.out
+packages/dedupe-files/tests/**/*.sh.out
 .DS_Store
+packages/dedupe-files/dedupe-files-*.tgz

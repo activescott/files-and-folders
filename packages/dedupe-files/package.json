@@ -1,5 +1,5 @@
 {
-  "name": "find-duplicates",
+  "name": "dedupe-files",
   "version": "1.0.0",
   "main": "dist/es/index.js",
   "types": "dist/es/index.d.ts",
@@ -8,8 +8,12 @@
     "node": ">=16.14.0"
   },
   "bin": {
-    "find-duplicates": "dist/es/index.js"
+    "dedupe-files": "dist/es/index.js"
   },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
   "author": "scott@willeke.com",
   "license": "MIT",
   "dependencies": {
@@ -48,6 +52,6 @@
     "dev": "npm run watch",
     "pretest": "npm run lint",
     "coverage-publish": "cat ./coverage/lcov.info | coveralls",
-    "prepare": "cd ../.. && husky install packages/find-duplicates/.husky"
+    "prepare": "cd ../.. && husky install packages/dedupe-files/.husky"
   }
 }
