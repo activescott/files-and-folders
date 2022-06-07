@@ -45,11 +45,14 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           flag-name: nodejs-${{ matrix.node }}
           parallel: true
-          path-to-lcov: ${{ matrix.package_dir }}/coverage/lcov.info
+          base-path: ${{ matrix.package_dir }}
 
   update_code_coverage:
-    needs: test
+    needs: [test]
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        package_dir: [packages/dedupe-files]    
     steps:
       - name: Coveralls Finished
         uses: coverallsapp/github-action@master
@@ -57,6 +60,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel-finished: true
+          base-path: ${{ matrix.package_dir }}
 
   publish_package:
     needs: [test]
