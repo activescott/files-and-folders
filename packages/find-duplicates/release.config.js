@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   // https://github.com/semantic-release/semantic-release/blob/beta/docs/usage/configuration.md
   branches: [
     "main",
