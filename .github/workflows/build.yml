@@ -38,30 +38,6 @@ jobs:
           cd ${{ matrix.package_dir }}
           npm run test
 
-      - name: publish coverage
-        uses: coverallsapp/github-action@master
-        continue-on-error: true
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          flag-name: nodejs-${{ matrix.node }}
-          parallel: true
-          base-path: ${{ matrix.package_dir }}
-
-  update_code_coverage:
-    needs: [test]
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        package_dir: [packages/dedupe-files]    
-    steps:
-      - name: Coveralls Finished
-        uses: coverallsapp/github-action@master
-        continue-on-error: true
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          parallel-finished: true
-          base-path: ${{ matrix.package_dir }}
-
   publish_package:
     needs: [test]
     runs-on: ubuntu-20.04
