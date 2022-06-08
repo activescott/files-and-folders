@@ -1,11 +1,10 @@
-import { isDirectory } from "../lib/fs.js"
-import { resolve } from "node:path"
-import { opendir } from "node:fs/promises"
-import { FileTracker } from "./FileTracker.js"
-import { StreamLike, StreamLogger } from "./StreamLogger.js"
+import { FileTracker } from "../lib/FileTracker.js"
+import { StreamLogger } from "../lib/StreamLogger.js"
+import type { StreamLike } from "../lib/StreamLike"
 import { createWriteStream, WriteStream } from "node:fs"
 
 export interface PrintOptions {
+  /** The set of directories to search for duplicate files in. */
   input_paths: string[]
   /** include files with duplicate names, but different content */
   names?: boolean
@@ -25,44 +24,10 @@ export default async function print(
     throw new Error("input_paths must be an array")
   }
   const logger = new StreamLogger(stdOut, stdErr)
-
-  const inputPathsResolved = options.input_paths.map((p) => resolve(p))
-  const tracker = new FileTracker()
-  //TODO: refactor this whole traverser business into FileTracker.
-  const traverser = async (path: string, priority: number): Promise<void> => {
-    logger.info(`Searching ${path} (priority ${priority})`)
-    if (!(await isDirectory(path))) {
-      logger.error(`${path} is not a directory`)
-      return
-    }
-    const dir = await opendir(path)
-    const promisedTrackers: Promise<unknown>[] = []
-
-    //TODO: filter & map via irritable iterable:
-    for await (const entry of dir) {
-      if (entry.isFile()) {
-        const promise = tracker.trackFile({
-          path: resolve(dir.path, entry.name),
-          priority: priority,
-        })
-        promisedTrackers.push(promise)
-      } else if (entry.isDirectory()) {
-        const promise = traverser(resolve(dir.path, entry.name), priority)
-        promisedTrackers.push(promise)
-      }
-    }
-    await Promise.all(promisedTrackers)
-  }
-
-  const promisedTraverses: Promise<void>[] = []
-  for (let priority = 0; priority < inputPathsResolved.length; priority++) {
-    const path: string = inputPathsResolved[priority] as string
-    promisedTraverses.push(traverser(path, priority))
-  }
-  await Promise.all(promisedTraverses).catch((reason) =>
-    logger.error(String(reason))
+  const tracker: FileTracker = await FileTracker.findDuplicates(
+    options.input_paths,
+    logger
   )
-  logger.info(`Found ${tracker.fileCount().toLocaleString()} files...`)
 
   let outFile: StreamLogger | undefined = undefined
   let outStream: WriteStream

@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 import { basename } from "node:path"
+import { rename } from "fs/promises"
 import { fileURLToPath } from "url"
 import yargs from "yargs"
 import { hideBin } from "yargs/helpers"
+import move from "./commands/move.js"
 import print from "./commands/print.js"
 
 export interface CliProcess {
@@ -18,9 +20,9 @@ export interface StdOutStream {
 
 export function main(process: CliProcess): void {
   yargs(hideBin(process.argv))
-    .command<{ input_paths: string[]; names: boolean }>(
+    .command<{ input_paths: string[]; out?: string; names: boolean }>(
       "print [options] <input_paths..>",
-      "find duplicates and print them out",
+      "find duplicate files and print them out",
       (yargs) => {
         // see https://github.com/yargs/yargs/issues/541#issuecomment-573347835
         return (
@@ -52,6 +54,32 @@ export function main(process: CliProcess): void {
       async (argv) => {
         // console.log({ command: "print", argv })
         await print(argv, process.stdout, process.stderr)
+      }
+    )
+    .command<{ input_paths: string[]; out: string }>(
+      "move [options] <input_paths..>",
+      "find duplicate files and move them to specified destination path",
+      (yargs) => {
+        return (
+          yargs
+            .positional("input_paths", {
+              describe: "paths to search for duplicates",
+            })
+            // see https://yargs.js.org/docs/#api-reference-optionskey-opt
+            .options({
+              o: {
+                alias: "out",
+                demandOption: true,
+                default: "",
+                describe: "A file name to output the duplicate files to.",
+                type: "string",
+              },
+            })
+        )
+      },
+      async (argv) => {
+        // console.log({ command: "move", argv })
+        await move(argv, rename, process.stdout, process.stderr)
       }
     )
     .scriptName("dedupe-files")

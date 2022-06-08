@@ -1,5 +1,3 @@
-/// <reference types="jest" />
-
 import { test, it, describe, expect } from "@jest/globals"
 import print, { PrintOptions } from "./print"
 import StringWriter from "../../tests/support/StringWriter.js"

@@ -1,8 +1,9 @@
-import { getFileSize, hashFile } from "../lib/fs.js"
-import { basename } from "node:path"
+import { getFileSize, hashFile, isDirectory } from "./fs.js"
+import { basename, resolve } from "node:path"
 import { filter, map } from "irritable-iterable"
 import { cpus, EOL } from "node:os"
 import type { StreamLogger } from "./StreamLogger.js"
+import { opendir } from "node:fs/promises"
 
 interface FileInfo {
   path: string
@@ -43,11 +44,51 @@ class FileHasher {
   }
 }
 
-export class FileTracker {
+export abstract class FileTracker {
   private filePathsBySize = new Map<number, FileInfo[]>()
   private filePathsByName = new Map<string, FileInfo[]>()
   private filePathsWithSameSizeCount = 0
   private _fileCount = 0
+
+  public static async findDuplicates(
+    input_paths: string[],
+    logger: StreamLogger
+  ): Promise<FileTracker> {
+    const tracker = new FileTrackerImpl()
+    const traverser = async (path: string, priority: number): Promise<void> => {
+      logger.info(`Searching ${path} (priority ${priority})`)
+      if (!(await isDirectory(path))) {
+        logger.error(`${path} is not a directory`)
+        return
+      }
+      const dir = await opendir(path)
+      const promisedTrackers: Promise<unknown>[] = []
+
+      for await (const entry of dir) {
+        if (entry.isFile()) {
+          const promise = tracker.trackFile({
+            path: resolve(dir.path, entry.name),
+            priority: priority,
+          })
+          promisedTrackers.push(promise)
+        } else if (entry.isDirectory()) {
+          const promise = traverser(resolve(dir.path, entry.name), priority)
+          promisedTrackers.push(promise)
+        }
+      }
+      await Promise.all(promisedTrackers)
+    }
+    const promisedTraversers: Promise<void>[] = []
+    for (let priority = 0; priority < input_paths.length; priority++) {
+      const path: string = input_paths[priority] as string
+      promisedTraversers.push(traverser(path, priority))
+    }
+    await Promise.all(promisedTraversers).catch((reason) =>
+      logger.error(String(reason))
+    )
+    logger.info(`Found ${tracker.fileCount().toLocaleString()} files...`)
+    return tracker
+  }
 
   public fileCount(): number {
     return this._fileCount
@@ -179,3 +220,6 @@ export class FileTracker {
     files.push(file)
   }
 }
+
+/** Private implementation of FileTracker to prevent FileTracker from being instantiated directly */
+class FileTrackerImpl extends FileTracker {}
