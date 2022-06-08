@@ -1,0 +1,67 @@
+name: build
+
+# We want pushes to main, beta, and next to trigger a publish to npm for the corresponding npm dist-tag.
+# NOTE: semantic-release detects pull requests and won't deploy on them so we don't have to deal with that complexity here.
+# Any pull request should run all tests.
+on:
+  push:
+    branches: [main, beta, next]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node: [16]
+        package_dir: [packages/dedupe-files]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+          cache-dependency-path: ${{ matrix.package_dir }}/package-lock.json
+
+      - name: install dependencies
+        run: |
+          cd ${{ matrix.package_dir }}
+          npm i
+
+      - name: test
+        env:
+          CI_NODE_VERSION: ${{ matrix.node }}
+        run: |
+          cd ${{ matrix.package_dir }}
+          npm run test
+
+  publish_package:
+    needs: [test]
+    runs-on: ubuntu-20.04
+    environment: publish
+    strategy:
+      matrix:
+        package_dir: [packages/dedupe-files]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: v16.x
+
+      #- name: debug publish_package
+      #  uses: actions/bin/debug@master
+
+      - name: publish to npm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd ${{ matrix.package_dir }}
+          npm install
+          npx semantic-release@19

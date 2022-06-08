@@ -1,0 +1,38 @@
+import { stat } from "node:fs/promises"
+import { createReadStream, ReadStream } from "node:fs"
+import { createHash } from "node:crypto"
+import { pipeline } from "node:stream/promises"
+
+export async function isDirectory(path: string): Promise<boolean> {
+  try {
+    const stats = await stat(path)
+    return stats.isDirectory()
+  } catch (err) {
+    return false
+  }
+}
+
+export async function getFileSize(path: string): Promise<number> {
+  try {
+    const stats = await stat(path)
+    return stats.size
+  } catch (err) {
+    return 0
+  }
+}
+
+export async function hashFile(path: string): Promise<string> {
+  const fileStream = createReadStream(path)
+  try {
+    return await hashStream(fileStream)
+  } finally {
+    fileStream.close()
+  }
+}
+
+export async function hashStream(stream: ReadStream): Promise<string> {
+  // NOTE: sha1 is ~2x faster than sha256 and while attacks are possible, we're not using it for security or digital signatures here so it should be fine.
+  const hash = createHash("sha1")
+  await pipeline(stream, hash)
+  return hash.digest("hex")
+}
