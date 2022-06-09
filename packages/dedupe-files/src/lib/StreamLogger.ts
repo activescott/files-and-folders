@@ -1,10 +1,8 @@
 import util from "node:util"
-
-export type StreamLike = {
-  write(str: string): void
-}
+import type { StreamLike } from "./StreamLike.js"
 
 const EOL = "\n"
+
 export class StreamLogger {
   public constructor(
     private readonly stdout: StreamLike,

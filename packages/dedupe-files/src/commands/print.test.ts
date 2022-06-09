@@ -1,5 +1,3 @@
-/// <reference types="jest" />
-
 import { test, it, describe, expect } from "@jest/globals"
 import print, { PrintOptions } from "./print"
 import StringWriter from "../../tests/support/StringWriter.js"
@@ -52,19 +50,19 @@ describe("argument validation", () => {
   })
 
   test("accepts path that is relative and exists", async () => {
-    await expect(printError(["./test-data"])).resolves.toBe("")
+    await expect(printError(["./test-data/one"])).resolves.toBe("")
   })
 
   test("rejects path that is relative and doesn't exist", async () => {
     await expect(
-      printError(["./test-data", "./doesnotexistanywhere"])
+      printError(["./test-data/one", "./doesnotexistanywhere"])
     ).resolves.toMatch(/.*\/doesnotexistanywhere is not a directory/)
   })
 
   test("accepts path that is absolute and exists", async () => {
     await expect(
       print(
-        { input_paths: [resolve("./test-data")] },
+        { input_paths: [resolve("./test-data/one")] },
         new StringWriter(),
         new StringWriter()
       )
