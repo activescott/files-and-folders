@@ -13,7 +13,9 @@ Just run it with `npx` (as shown below) or install it globally with `npm install
 npx dedupe-files [print | move dest_path | delete] input_path [input_path...]
 ```
 
-### Example
+### Examples
+
+#### print
 
 ```
 $ npx dedupe-files print --out "duplicates.txt" \
@@ -29,13 +31,30 @@ Comparing files with identical sizes...
 Hashing 6 files in batches of 64...
 Hashing files complete.
 Duplicates written to output file /Users/scott/src/activescott/files-and-folders/packages/dedupe-files/tests/integration/duplicates.txt.
-```
 
-duplicates.txt:
+# duplicates.txt:
 
-```
 content identical: /Users/scott/src/activescott/files-and-folders/packages/dedupe-files/test-data/one/eye-test.jpg and /Users/scott/src/activescott/files-and-folders/packages/dedupe-files/test-data/two/not-the-eye-test-pic.jpg
 content identical: /Users/scott/src/activescott/files-and-folders/packages/dedupe-files/test-data/one/tv-test-pattern.png and /Users/scott/src/activescott/files-and-folders/packages/dedupe-files/test-data/two/tv-test-pattern.png
+```
+
+#### move
+
+```
+$ npx dedupe-files@beta move \
+  --out "~/Downloads/duplicates" \
+  "~/Downloads/one" \
+  "~/Downloads/two"
+
+Searching /Users/scott/Downloads/dedupe-files-temp/one (priority 0)
+Searching /Users/scott/Downloads/dedupe-files-temp/two (priority 1)
+Searching /Users/scott/Downloads/dedupe-files-temp/two/toodeep (priority 1)
+Found 8 files...
+Hashing 6 files in batches of 64...
+Hashing files complete.
+Moving /Users/scott/Downloads/dedupe-files-temp/two/not-the-eye-test-pic.jpg to /Users/scott/Downloads/dedupe-files-temp/duplicates/not-the-eye-test-pic.jpg
+Moving /Users/scott/Downloads/dedupe-files-temp/two/tv-test-pattern.png to /Users/scott/Downloads/dedupe-files-temp/duplicates/tv-test-pattern.png
+
 ```
 
 ## Features
