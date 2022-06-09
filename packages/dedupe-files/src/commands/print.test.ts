@@ -50,7 +50,7 @@ describe("argument validation", () => {
   })
 
   test("accepts path that is relative and exists", async () => {
-    await expect(printError(["./test-data"])).resolves.toBe("")
+    await expect(printError(["./test-data/one"])).resolves.toBe("")
   })
 
   test("rejects path that is relative and doesn't exist", async () => {
@@ -62,7 +62,7 @@ describe("argument validation", () => {
   test("accepts path that is absolute and exists", async () => {
     await expect(
       print(
-        { input_paths: [resolve("./test-data")] },
+        { input_paths: [resolve("./test-data/one")] },
         new StringWriter(),
         new StringWriter()
       )

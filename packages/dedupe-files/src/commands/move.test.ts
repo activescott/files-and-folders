@@ -2,9 +2,7 @@ import { jest, it, describe, expect } from "@jest/globals"
 import move, { MoveFileFunction, MoveOptions } from "./move.js"
 import StringWriter from "../../tests/support/StringWriter.js"
 import { existsSync, mkdirSync, rmSync, cpSync } from "node:fs"
-import { join, relative, resolve } from "node:path"
-import type { Matchers } from "expect"
-import type { JestExpect } from "@jest/expect"
+import { join } from "node:path"
 import { rename } from "node:fs/promises"
 import { exists } from "../lib/fs.js"
 
@@ -85,57 +83,40 @@ expect.extend({
   },
 })
 
-interface MoveMatchers<R = void> extends Matchers<void> {
-  toMoveFileFromPath(fileMovedFromPath: string): R
-  toMoveFileToPath(relativeToPath: string): R
+function expectOutputFile(
+  outputDir: PathString,
+  expectedFile: PathString
+): void {
+  expect(exists(join(outputDir, expectedFile))).resolves.toBe(true)
 }
 
-type MoveFileFuncCalls = Array<string[]>
-
-type MoveFilesExpect = JestExpect & MoveMatchers
-
-function expectMoveFiles(actual: MoveFileFuncCalls): MoveFilesExpect {
-  // this works because of the call to expect.extend!
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return expect(actual) as any as MoveFilesExpect
+function cloneTestFilesForTest(): PathString {
+  const testFileDir = getTempDir("in", true)
+  copyTestFilesTo(testFileDir)
+  return testFileDir
 }
 
 it("should move duplicates to destination", async () => {
-  const moveFileMock = jest.fn<MoveFileFunction>()
+  const testFileDir = cloneTestFilesForTest()
+
   const options: MoveOptions = {
-    input_paths: ["./test-data/one", "./test-data/two"],
+    input_paths: [`${testFileDir}/one`, `${testFileDir}/two`],
     out: getTempDir("out", true),
   }
   try {
-    const moveFileImpl = moveFileMock
+    await move(options, rename, new StringWriter(), new StringWriter())
 
-    await move(options, moveFileImpl, new StringWriter(), new StringWriter())
-
-    // make the paths relative so we don't have to worry about qualified paths:
-    const fromPath = resolve("./")
-    const moveFileCalls = moveFileMock.mock.calls.map(([oldPath, newPath]) => [
-      relative(fromPath, oldPath),
-      relative(options.out, newPath),
-    ])
-
-    // eslint-disable-next-line no-magic-numbers
-    expect(moveFileCalls.length).toBeGreaterThan(2)
-
-    expectMoveFiles(moveFileCalls).toMoveFileFromPath(
-      "test-data/two/tv-test-pattern.png"
-    )
-    expectMoveFiles(moveFileCalls).toMoveFileFromPath(
-      "test-data/two/not-the-eye-test-pic.jpg"
-    )
+    expectOutputFile(options.out, "tv-test-pattern.png")
+    expectOutputFile(options.out, "not-the-eye-test-pic.jpg")
   } finally {
+    rmSync(testFileDir, { recursive: true, force: true })
     rmSync(options.out, { recursive: true, force: true })
   }
 })
 
 it("should rename to prevent collisions in output directory", async () => {
   // prepare a clone of test files dir
-  const testFileDir = getTempDir("in", true)
-  copyTestFilesTo(testFileDir)
+  const testFileDir = cloneTestFilesForTest()
 
   const options: MoveOptions = {
     input_paths: [`${testFileDir}/one`, `${testFileDir}/two`],
@@ -145,13 +126,9 @@ it("should rename to prevent collisions in output directory", async () => {
   try {
     await move(options, rename, new StringWriter(), new StringWriter())
 
-    await expect(
-      exists(join(options.out, "same-name-same-content-thrice.jpeg"))
-    ).resolves.toBe(true)
+    expectOutputFile(options.out, "same-name-same-content-thrice.jpeg")
     // Here is the interesting part where we make sure that the file was renamed:
-    await expect(
-      exists(join(options.out, "same-name-same-content-thrice (1).jpeg"))
-    ).resolves.toBe(true)
+    expectOutputFile(options.out, "same-name-same-content-thrice (1).jpeg")
   } finally {
     rmSync(testFileDir, { recursive: true, force: true })
     rmSync(options.out, { recursive: true, force: true })
