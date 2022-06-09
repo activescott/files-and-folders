@@ -9,8 +9,33 @@ Just run it with `npx` (as shown below) or install it globally with `npm install
 
 ## Usage
 
-```
+```sh
 npx dedupe-files [print | move dest_path | delete] input_path [input_path...]
+```
+
+### Example
+
+```
+$ npx dedupe-files print --out "duplicates.txt" \
+  "./test-data/one" \
+  "./test-data/two"
+
+Searching /Users/scott/src/activescott/files-and-folders/packages/dedupe-files/tests/integration/../../test-data/one (priority 0)
+Searching /Users/scott/src/activescott/files-and-folders/packages/dedupe-files/tests/integration/../../test-data/two (priority 1)
+Searching /Users/scott/src/activescott/files-and-folders/packages/dedupe-files/test-data/two/toodeep (priority 1)
+Found 8 files...
+Writing to output file /Users/scott/src/activescott/files-and-folders/packages/dedupe-files/tests/integration/duplicates.txt.
+Comparing files with identical sizes...
+Hashing 6 files in batches of 64...
+Hashing files complete.
+Duplicates written to output file /Users/scott/src/activescott/files-and-folders/packages/dedupe-files/tests/integration/duplicates.txt.
+```
+
+duplicates.txt:
+
+```
+content identical: /Users/scott/src/activescott/files-and-folders/packages/dedupe-files/test-data/one/eye-test.jpg and /Users/scott/src/activescott/files-and-folders/packages/dedupe-files/test-data/two/not-the-eye-test-pic.jpg
+content identical: /Users/scott/src/activescott/files-and-folders/packages/dedupe-files/test-data/one/tv-test-pattern.png and /Users/scott/src/activescott/files-and-folders/packages/dedupe-files/test-data/two/tv-test-pattern.png
 ```
 
 ## Features

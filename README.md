@@ -5,7 +5,7 @@ Lets try to make them reusable and portable.
 
 ## dedupe-files
 
-See [packages/dedupe-files/README.md]()
+See [packages/dedupe-files/README.md](packages/dedupe-files/README.md)
 
 
 ### organize-by-date
