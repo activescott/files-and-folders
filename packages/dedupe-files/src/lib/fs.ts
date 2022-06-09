@@ -3,6 +3,15 @@ import { createReadStream, ReadStream } from "node:fs"
 import { createHash } from "node:crypto"
 import { pipeline } from "node:stream/promises"
 
+export async function exists(path: string): Promise<boolean> {
+  try {
+    await stat(path)
+    return true
+  } catch {
+    return false
+  }
+}
+
 export async function isDirectory(path: string): Promise<boolean> {
   try {
     const stats = await stat(path)

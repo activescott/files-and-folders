@@ -55,7 +55,7 @@ describe("argument validation", () => {
 
   test("rejects path that is relative and doesn't exist", async () => {
     await expect(
-      printError(["./test-data", "./doesnotexistanywhere"])
+      printError(["./test-data/one", "./doesnotexistanywhere"])
     ).resolves.toMatch(/.*\/doesnotexistanywhere is not a directory/)
   })
 

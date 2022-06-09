@@ -1,5 +1,5 @@
-import { basename, join } from "node:path"
-import { isDirectory } from "../lib/fs.js"
+import { join, parse } from "node:path"
+import { exists, isDirectory } from "../lib/fs.js"
 import type { StreamLike } from "../lib/StreamLike.js"
 import { StreamLogger } from "../lib/StreamLogger.js"
 import { FileTracker } from "../lib/FileTracker.js"
@@ -9,6 +9,8 @@ export type MoveFileFunction = (
   newPath: string
 ) => Promise<void>
 
+export type FileExistsFunction = (path: string) => Promise<boolean>
+
 export interface MoveOptions {
   /** The set of directories to search for duplicate files in. */
   input_paths: string[]
@@ -17,7 +19,6 @@ export interface MoveOptions {
 }
 
 /** A function to execute the move of the file. */
-
 export default async function move(
   options: MoveOptions,
   moveFileImpl: MoveFileFunction,
@@ -37,10 +38,15 @@ export default async function move(
   for await (const files of tracker.getFilesWithSameContent(logger)) {
     for (let index = 1; index < files.length; index++) {
       const oldPath: string = files[index] as string
-      const fname = basename(oldPath)
-      const newPath = join(options.out, fname)
+      const { name, ext } = parse(oldPath)
+      let newPath = join(options.out, name + ext)
+      let counter = 0
+      while (await exists(newPath)) {
+        const { name, ext } = parse(oldPath)
+        newPath = join(options.out, name + ` (${++counter})` + ext)
+      }
       logger.info("Moving", oldPath, "to", newPath)
-      moveFileImpl(oldPath, newPath)
+      await moveFileImpl(oldPath, newPath)
     }
   }
 }

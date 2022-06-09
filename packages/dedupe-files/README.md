@@ -18,7 +18,8 @@ npx dedupe-files [print | move dest_path | delete] input_path [input_path...]
 #### print
 
 ```
-$ npx dedupe-files print --out "duplicates.txt" \
+$ npx dedupe-files print \
+  --out "duplicates.txt" \
   "./test-data/one" \
   "./test-data/two"
 
@@ -86,9 +87,8 @@ Moving /Users/scott/Downloads/dedupe-files-temp/two/tv-test-pattern.png to /User
 - actions to be taken for each duplicate:
 
 - [x] feat: print/dry-run action (no action) for found duplicate: prints to output file or stdout
-
-- [ ] feat: move file action for found duplicate to specified path
-  - [ ] Use the "original" file's name with a postfixed a counter for uniqueness
+- [x] feat: move file action for found duplicate to specified path
+  - [x] feat: ensure move command never loses a file by using "original" file's name with a postfixed a counter for uniqueness
 - [ ] feat: delete action for found duplicate
 
 ## Alternatives
