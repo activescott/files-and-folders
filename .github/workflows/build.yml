@@ -64,4 +64,5 @@ jobs:
         run: |
           cd ${{ matrix.package_dir }}
           npm install
+          npm run build
           npx semantic-release@19
