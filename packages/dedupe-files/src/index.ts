@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { basename } from "node:path"
 import { fileURLToPath } from "url"
 import yargs from "yargs"
 import { hideBin } from "yargs/helpers"
@@ -59,6 +60,10 @@ export function main(process: CliProcess): void {
     .parse()
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (
+  (process.argv.length > 1 &&
+    process.argv[1] === fileURLToPath(import.meta.url)) ||
+  basename(process.argv[1] as string) === "dedupe-files"
+) {
   main(process)
 }
