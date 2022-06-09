@@ -1,7 +1,6 @@
 name: build
 
 # We want pushes to main, beta, and next to trigger a publish to npm for the corresponding npm dist-tag.
-# NOTE: semantic-release detects pull requests and won't deploy on them so we don't have to deal with that complexity here.
 # Any pull request should run all tests.
 on:
   push:
@@ -42,6 +41,8 @@ jobs:
     needs: [test]
     runs-on: ubuntu-20.04
     environment: publish
+    # only run the publish on branches that semantic-release will actually do anything with: also see .releaserc.json
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/alpha'
     strategy:
       matrix:
         package_dir: [packages/dedupe-files]
