@@ -39,6 +39,7 @@ export default async function move(
       const oldPath: string = files[index] as string
       const fname = basename(oldPath)
       const newPath = join(options.out, fname)
+      logger.info("Moving", oldPath, "to", newPath)
       moveFileImpl(oldPath, newPath)
     }
   }

@@ -68,3 +68,5 @@ it("should move duplicates to destination", async () => {
     rmSync(options.out, { recursive: true, force: true })
   }
 })
+
+it.todo("should rename collisions in output directory")
