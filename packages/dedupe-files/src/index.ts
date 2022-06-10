@@ -6,6 +6,7 @@ import yargs from "yargs"
 import { hideBin } from "yargs/helpers"
 import move from "./commands/move.js"
 import print from "./commands/print.js"
+import { logTimeTaken } from "./lib/StreamLogger.js"
 
 export interface CliProcess {
   argv: string[]
@@ -53,7 +54,11 @@ export function main(process: CliProcess): void {
       },
       async (argv) => {
         // console.log({ command: "print", argv })
-        await print(argv, process.stdout, process.stderr)
+        await logTimeTaken(
+          () => print(argv, process.stdout, process.stderr),
+          "print",
+          process.stdout
+        )
       }
     )
     .command<{ input_paths: string[]; out: string }>(
@@ -79,7 +84,11 @@ export function main(process: CliProcess): void {
       },
       async (argv) => {
         // console.log({ command: "move", argv })
-        await move(argv, rename, process.stdout, process.stderr)
+        await logTimeTaken(
+          () => move(argv, rename, process.stdout, process.stderr),
+          "move",
+          process.stdout
+        )
       }
     )
     .scriptName("dedupe-files")
