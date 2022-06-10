@@ -2,6 +2,8 @@
 THISDIR=$(cd $(dirname "$0"); pwd) #this script's directory
 THISSCRIPT=$(basename $0)
 
+"${THISDIR}/_build.sh"
+
 TEMP_ROOT=~/Downloads/dedupe-files-temp
 
 echo "Creating fresh ${TEMP_ROOT}..."

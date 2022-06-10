@@ -4,21 +4,27 @@ import { filter, map } from "irritable-iterable"
 import { cpus, EOL } from "node:os"
 import type { StreamLogger } from "./StreamLogger.js"
 import { opendir } from "node:fs/promises"
+import assert from "node:assert"
+import { humanReadableDataSize } from "./format.js"
 
 interface FileInfo {
   path: string
   priority: number
 }
 
-class FileHasher {
-  private filePathsByHash = new Map<string, FileInfo[]>()
+interface FileInfoWithSize extends FileInfo {
+  sizeInBytes: number
+}
 
-  public async trackFiles(files: FileInfo[]): Promise<void> {
+class FileHasher {
+  private filePathsByHash = new Map<string, FileInfoWithSize[]>()
+
+  public async trackFiles(files: FileInfoWithSize[]): Promise<void> {
     const promises = files.map((file) => this.trackFile(file))
     await Promise.all(promises)
   }
 
-  public async trackFile(file: FileInfo): Promise<void> {
+  public async trackFile(file: FileInfoWithSize): Promise<void> {
     const hash = await hashFile(file.path)
     let paths = this.filePathsByHash.get(hash)
     if (!paths) {
@@ -28,17 +34,16 @@ class FileHasher {
     paths.push(file)
   }
 
-  public getAllEntries(): Iterable<[string, FileInfo[]]> {
+  public getAllEntries(): Iterable<[string, FileInfoWithSize[]]> {
     return this.filePathsByHash
   }
 
-  public getFilesWithSameContent(): Iterable<string[]> {
+  public getFilesWithSameContent(): Iterable<FileInfoWithSize[]> {
     // filter down to only those hashes that had more than one file...
     // ...sort by priority and return only the path
     const filteredPaths = map(this.filePathsByHash, ([, paths]) => paths)
       .filter((paths) => paths.length > 1)
       .map((files) => files.sort((a, b) => a.priority - b.priority))
-      .map((files) => files.map((file) => file.path))
 
     return filteredPaths
   }
@@ -46,7 +51,7 @@ class FileHasher {
 
 export abstract class FileTracker {
   private filePathsBySize = new Map<number, FileInfo[]>()
-  private filePathsByName = new Map<string, FileInfo[]>()
+  private filePathsByName = new Map<string, FileInfoWithSize[]>()
   private filePathsWithSameSizeCount = 0
   private _fileCount = 0
 
@@ -98,9 +103,9 @@ export abstract class FileTracker {
     logger: StreamLogger
   ): AsyncGenerator<string[]> {
     // leverage filePathsBySize to avoid expensive hashing of files unnecessarily (if size is different, obviously hash will be too!)
-    const pathsWithSameSizes: Iterable<FileInfo[]> = map(
+    const filesWithSameSizes: Iterable<FileInfoWithSize[]> = map(
       this.filePathsBySize,
-      ([, paths]) => paths
+      ([size, paths]) => paths.map((path) => ({ sizeInBytes: size, ...path }))
     ).filter((paths) => paths.length > 1)
 
     /**
@@ -125,13 +130,13 @@ export abstract class FileTracker {
       MAX_OPEN_FILES
     )
     logger.infoNoLine(
-      `Hashing ${this.filePathsWithSameSizeCount.toLocaleString()} files in batches of ${MAX_OUTSTANDING_HASHES}...`
+      `Hashing ${this.filePathsWithSameSizeCount.toLocaleString()} files in batches of ${MAX_OUTSTANDING_HASHES}: `
     )
     const hasher = new FileHasher()
     let allPromises: Promise<unknown>[] = []
     let completedCount = 0
-    for (const paths of pathsWithSameSizes) {
-      const somePromises = paths.map((paths) => hasher.trackFile(paths))
+    for (const files of filesWithSameSizes) {
+      const somePromises = files.map((file) => hasher.trackFile(file))
       allPromises = allPromises.concat(somePromises)
       if (allPromises.length > MAX_OUTSTANDING_HASHES) {
         await Promise.all(allPromises)
@@ -150,12 +155,22 @@ export abstract class FileTracker {
     }
     logger.info(EOL + "Hashing files complete.")
 
-    for (const paths of hasher.getFilesWithSameContent()) {
-      yield paths
+    // NOTE: a full extra iteration of these duplicate files for the sole purpose of getting the size of files:
+    let sizeInBytes = 0
+    for (const files of hasher.getFilesWithSameContent()) {
+      assert(files[0])
+      sizeInBytes += (files.length - 1) * files[0].sizeInBytes
+    }
+    logger.info(
+      `Duplicate files consume ${humanReadableDataSize(sizeInBytes)}.`
+    )
+
+    for (const files of hasher.getFilesWithSameContent()) {
+      yield files.map((f) => f.path)
     }
   }
 
-  public getFilesWithSameName(): Iterable<[string, FileInfo[]]> {
+  public getFilesWithSameName(): Iterable<[string, FileInfoWithSize[]]> {
     return filter(this.filePathsByName, ([, files]) => files.length > 1)
   }
 
@@ -189,11 +204,12 @@ export abstract class FileTracker {
   }
 
   public async trackFile(file: FileInfo): Promise<void> {
-    await Promise.all([this.trackFileSize(file), this.trackFileName(file)])
+    const fileWithSize: FileInfoWithSize = await this.trackFileSize(file)
+    await this.trackFileName(fileWithSize)
     this._fileCount++
   }
 
-  private async trackFileSize(file: FileInfo): Promise<void> {
+  private async trackFileSize(file: FileInfo): Promise<FileInfoWithSize> {
     const size = await getFileSize(file.path)
     let files = this.filePathsBySize.get(size)
     if (!files) {
@@ -208,9 +224,10 @@ export abstract class FileTracker {
       this.filePathsWithSameSizeCount++
     }
     files.push(file)
+    return { sizeInBytes: size, ...file }
   }
 
-  private async trackFileName(file: FileInfo): Promise<void> {
+  private async trackFileName(file: FileInfoWithSize): Promise<void> {
     const name = basename(file.path)
     let files = this.filePathsByName.get(name)
     if (!files) {
