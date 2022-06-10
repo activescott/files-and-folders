@@ -37,5 +37,7 @@ export async function logTimeTaken(
   const end = performance.now()
   const MILLISECONDS_PER_SECOND = 1000
   const seconds = (end - start) / MILLISECONDS_PER_SECOND
-  stdout.write(`${operationName} took ${seconds.toFixed(0)} seconds.` + EOL)
+  stdout.write(
+    `${operationName} took ${seconds.toLocaleString()} seconds.` + EOL
+  )
 }
