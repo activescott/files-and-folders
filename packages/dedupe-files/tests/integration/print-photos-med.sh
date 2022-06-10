@@ -2,6 +2,8 @@
 THISDIR=$(cd $(dirname "$0"); pwd) #this script's directory
 THISSCRIPT=$(basename $0)
 
+"${THISDIR}/_build.sh"
+
 # 2013+2014 is ~5K photos and takes several minutes:
 node "$THISDIR/../../dist/es/index.js" print \
   --out "${THISDIR}/${THISSCRIPT}.out" \
