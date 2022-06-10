@@ -47,8 +47,6 @@ content identical: /Volumes/scott-photos/photos/2014/03/IMG_0881.JPG and /Volume
 content identical: /Volumes/scott-photos/photos/2014/08/IMG_1285.MOV and /Volumes/home/!Backups/PHOTOS/Photos - backup misc/2014/IMG_1285.MOV
 ```
 
-```
-
 See [packages/dedupe-files/README.md](packages/dedupe-files/README.md) for more detail.
 
 ### organize-by-date (future)
