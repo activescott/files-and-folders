@@ -15,14 +15,65 @@ Just run it with `npx` (as shown below) or install it globally with `npm install
 ## Usage
 
 ```sh
-npx dedupe-files [print | move dest_path | delete] input_path [input_path...]
+Usage: dedupe-files <command> [options]
+
+Finds all duplicate files across the set of paths and then will **print** them out, **move** them to a directory, or **delete** them. Duplicates are identified by their actual content not their name or other attributes.
+
+Options:
+  -h, --help                        display help for command
+
+Commands:
+  print [options] <input_paths...>  print out duplicates
+  move [options] <input_paths...>   move duplicates to a directory
+  help [command]                    display help for command
+
+Examples:
+
+The following prints out a line to duplicates.txt for each duplicate file found in /Volumes/photos and /Volumes/backups/photos:
+
+  $ dedupe-files print --out "duplicates.txt" "/Volumes/photos" "/Volumes/backups/photos"
+
+The following moves each duplicate file found in /Volumes/photos and /Volumes/backups/photos to ~/Downloads/duplicates.
+The files in ~/Downloads/one are considered more "original" than those in ~/Downloads/two since it appears earlier on the command line:
+
+  $ dedupe-files move --out "~/Downloads/duplicates" "~/Downloads/one" "~/Downloads/two"
+```
+
+### `print` command
+
+```sh
+Usage: dedupe-files print [options] <input_paths...>
+
+Prints duplicate files to terminal or to a file.
+
+Options:
+  -n, --names       include files with duplicate names, but different content
+  -o, --out <file>  A file path to output the duplicate file paths to. If not specified, file paths are written to stdout.
+  -h, --help        display help for command
+```
+
+### `move` command
+
+```sh
+Usage: dedupe-files move [options] <input_paths...>
+
+Moves duplicate files to a designated directory.
+
+Options:
+  -o, --out <path>  Directory to output the duplicate files to.
+  -h, --help        display help for command
+
+Remarks:
+
+Files in *input_paths* that appear earlier on the command line are considered more "original".
+That is, the duplicates that are moved are the ones that are rooted in the last-most *input_paths* argument.
 ```
 
 ### Examples
 
 #### print
 
-```
+```sh
 $ npx dedupe-files print \
   --out "duplicates.txt" \
   '/Volumes/scott-photos/photos/2014' \
@@ -77,9 +128,9 @@ Moving /Users/scott/Downloads/dedupe-files-temp/two/not-the-eye-test-pic.jpg to 
 Moving /Users/scott/Downloads/dedupe-files-temp/two/tv-test-pattern.png to /Users/scott/Downloads/dedupe-files-temp/duplicates/tv-test-pattern.png
 ```
 
-#### Large Example (with print command)
+#### Large Example with 8,978 duplicates across 61,347 files
 
-```
+```sh
 npx dedupe-files print \
   --out "dupe-photos.out" \
   /Volumes/scott-photos/photos \

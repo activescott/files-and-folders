@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 import { basename } from "node:path"
-import { rename } from "fs/promises"
 import { fileURLToPath } from "url"
-import yargs from "yargs"
-import { hideBin } from "yargs/helpers"
-import move from "./commands/move.js"
-import print from "./commands/print.js"
+import { Command } from "commander"
+import type { PrintOptions } from "./commands/print.js"
 import { logTimeTaken } from "./lib/StreamLogger.js"
+import print from "./commands/print.js"
+import { rename } from "node:fs/promises"
+import move, { MoveOptions } from "./commands/move.js"
 
 export interface CliProcess {
   argv: string[]
@@ -19,82 +19,81 @@ export interface StdOutStream {
   end(): void
 }
 
-export function main(process: CliProcess): void {
-  yargs(hideBin(process.argv))
-    .command<{ input_paths: string[]; out?: string; names: boolean }>(
-      "print [options] <input_paths..>",
-      "find duplicate files and print them out",
-      (yargs) => {
-        // see https://github.com/yargs/yargs/issues/541#issuecomment-573347835
-        return (
-          yargs
-            .positional("input_paths", {
-              describe: "paths to search for duplicates",
-            })
-            // see https://yargs.js.org/docs/#api-reference-optionskey-opt
-            .options({
-              n: {
-                alias: "names",
-                demandOption: false,
-                default: false,
-                describe:
-                  "include files with duplicate names, but different content",
-                type: "boolean",
-              },
-              o: {
-                alias: "out",
-                demandOption: false,
-                default: false,
-                describe:
-                  "A file name to output the duplicate file paths to. If not specified, file paths are written to stdout.",
-                type: "string",
-              },
-            })
-        )
-      },
-      async (argv) => {
-        // console.log({ command: "print", argv })
-        await logTimeTaken(
-          () => print(argv, process.stdout, process.stderr),
-          "print",
-          process.stdout
-        )
-      }
+export async function main(process: CliProcess): Promise<void> {
+  const program = new Command()
+  program
+    .name("dedupe-files")
+    .usage("<command> [options]")
+    .description(
+      "Finds all duplicate files across the set of paths and then will **print** them out, **move** them to a directory, or **delete** them. Duplicates are identified by their actual content not their name or other attributes."
     )
-    .command<{ input_paths: string[]; out: string }>(
-      "move [options] <input_paths..>",
-      "find duplicate files and move them to specified destination path",
-      (yargs) => {
-        return (
-          yargs
-            .positional("input_paths", {
-              describe: "paths to search for duplicates",
-            })
-            // see https://yargs.js.org/docs/#api-reference-optionskey-opt
-            .options({
-              o: {
-                alias: "out",
-                demandOption: true,
-                default: "",
-                describe: "A file name to output the duplicate files to.",
-                type: "string",
-              },
-            })
-        )
-      },
-      async (argv) => {
-        // console.log({ command: "move", argv })
-        await logTimeTaken(
-          () => move(argv, rename, process.stdout, process.stderr),
-          "move",
-          process.stdout
-        )
-      }
+    .showHelpAfterError()
+    .addHelpText(
+      "after",
+      `
+Examples:
+
+The following prints out a line to duplicates.txt for each duplicate file found in /Volumes/photos and /Volumes/backups/photos:
+
+  $ dedupe-files print --out "duplicates.txt" "/Volumes/photos" "/Volumes/backups/photos"
+
+The following moves each duplicate file found in /Volumes/photos and /Volumes/backups/photos to ~/Downloads/duplicates.
+The files in ~/Downloads/one are considered more "original" than those in ~/Downloads/two since it appears earlier on the command line:
+
+  $ dedupe-files move --out "~/Downloads/duplicates" "~/Downloads/one" "~/Downloads/two"
+`
     )
-    .scriptName("dedupe-files")
-    .demandCommand()
-    .help()
-    .parse()
+
+  program
+    .command("print")
+    .summary("print out duplicates")
+    .description("Prints duplicate files to terminal or to a file.")
+    .argument("<input_paths...>")
+    .option(
+      "-n, --names",
+      "include files with duplicate names, but different content"
+    )
+    .option(
+      "-o, --out <file>",
+      "A file path to output the duplicate file paths to. If not specified, file paths are written to stdout."
+    )
+    .action(async (input_paths: string[], options: PrintOptions) => {
+      options = { ...options, input_paths }
+      await logTimeTaken(
+        () => print(options, process.stdout, process.stderr),
+        "print",
+        process.stdout
+      )
+    })
+
+  program
+    .command("move")
+    .summary("move duplicates to a directory")
+    .description("Moves duplicate files to a designated directory.")
+    .argument("<input_paths...>")
+    .requiredOption(
+      "-o, --out <path>",
+      "Directory to output the duplicate files to."
+    )
+    .addHelpText(
+      "after",
+      `
+Remarks:
+
+Files in *input_paths* that appear earlier on the command line are considered more "original".
+That is, the duplicates that are moved are the ones that are rooted in the last-most *input_paths* argument.
+`
+    )
+    .action(async (input_paths: string[], options: MoveOptions) => {
+      options = { ...options, input_paths }
+      await logTimeTaken(
+        () => move(options, rename, process.stdout, process.stderr),
+        "move",
+        process.stdout
+      )
+    })
+
+  await program.parseAsync(process.argv)
 }
 
 if (
@@ -102,5 +101,5 @@ if (
     process.argv[1] === fileURLToPath(import.meta.url)) ||
   basename(process.argv[1] as string) === "dedupe-files"
 ) {
-  main(process)
+  await main(process)
 }

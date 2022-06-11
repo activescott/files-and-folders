@@ -6,11 +6,34 @@ Utilities to manage files and folders that I wanted. Trying to make them reusabl
 
 [![npm version](https://badge.fury.io/js/dedupe-files.svg)](https://www.npmjs.com/package/dedupe-files)
 
-Finds all files that are the same file (by content, or optionally name) across the set of paths and **print** out the duplicates, **move** the duplicates to a specified directory, or **delete** the duplicate.
+```sh
+Usage: dedupe-files <command> [options]
+
+Finds all duplicate files across the set of paths and then will **print** them out, **move** them to a directory, or **delete** them. Duplicates are identified by their actual content not their name or other attributes.
+
+Options:
+  -h, --help                        display help for command
+
+Commands:
+  print [options] <input_paths...>  print out duplicates
+  move [options] <input_paths...>   move duplicates to a directory
+  help [command]                    display help for command
+
+Examples:
+
+The following prints out a line to duplicates.txt for each duplicate file found in /Volumes/photos and /Volumes/backups/photos:
+
+  $ dedupe-files print --out "duplicates.txt" "/Volumes/photos" "/Volumes/backups/photos"
+
+The following moves each duplicate file found in /Volumes/photos and /Volumes/backups/photos to ~/Downloads/duplicates.
+The files in ~/Downloads/one are considered more "original" than those in ~/Downloads/two since it appears earlier on the command line:
+
+  $ dedupe-files move --out "~/Downloads/duplicates" "~/Downloads/one" "~/Downloads/two"
+```
 
 ### Example
 
-```
+```sh
 $ npx dedupe-files print \
   --out "duplicates.txt" \
   '/Volumes/scott-photos/photos/2014' \
