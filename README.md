@@ -17,6 +17,7 @@ Options:
 Commands:
   print [options] <input_paths...>  print out duplicates
   move [options] <input_paths...>   move duplicates to a directory
+  delete <input_paths...>           delete duplicate files
   help [command]                    display help for command
 
 Examples:

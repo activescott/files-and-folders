@@ -25,6 +25,7 @@ Options:
 Commands:
   print [options] <input_paths...>  print out duplicates
   move [options] <input_paths...>   move duplicates to a directory
+  delete <input_paths...>           delete duplicate files
   help [command]                    display help for command
 
 Examples:
@@ -69,9 +70,26 @@ Files in *input_paths* that appear earlier on the command line are considered mo
 That is, the duplicates that are moved are the ones that are rooted in the last-most *input_paths* argument.
 ```
 
-### Examples
+### `delete` command
 
-#### print
+```sh
+Usage: dedupe-files delete [options] <input_paths...>
+
+Deletes duplicate files.
+
+Options:
+  -h, --help  display help for command
+
+Remarks:
+
+Files in *input_paths* that appear earlier on the command line are considered more "original".
+That is, the duplicates that are deleted are the ones that are rooted in the last-most *input_paths* argument.
+If duplicates are in the same directory tree, then which one is deleted is not deterministic (but it will leave one behind).
+```
+
+## Examples
+
+### print
 
 ```sh
 $ npx dedupe-files print \
@@ -110,7 +128,7 @@ content identical: /Volumes/scott-photos/photos/2014/03/IMG_0881.JPG and /Volume
 content identical: /Volumes/scott-photos/photos/2014/08/IMG_1285.MOV and /Volumes/home/!Backups/PHOTOS/Photos - backup misc/2014/IMG_1285.MOV
 ```
 
-#### move
+### move
 
 ```
 $ npx dedupe-files@beta move \
@@ -128,7 +146,7 @@ Moving /Users/scott/Downloads/dedupe-files-temp/two/not-the-eye-test-pic.jpg to 
 Moving /Users/scott/Downloads/dedupe-files-temp/two/tv-test-pattern.png to /Users/scott/Downloads/dedupe-files-temp/duplicates/tv-test-pattern.png
 ```
 
-#### Large Example with 8,978 duplicates across 61,347 files
+### Large Example with 8,978 duplicates across 61,347 files
 
 ```sh
 npx dedupe-files print \
@@ -180,7 +198,7 @@ print took 2264 seconds.
 - [x] feat: print/dry-run action (no action) for found duplicate: prints to output file or stdout
 - [x] feat: move file action for found duplicate to specified path
   - [x] feat: ensure move command never loses a file by using "original" file's name with a postfixed a counter for uniqueness
-- [ ] feat: delete action for found duplicate
+- [x] feat: delete action for found duplicate
 
 ## Alternatives
 
