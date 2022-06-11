@@ -36,9 +36,18 @@ export default async function print(
     outStream = createWriteStream(options.out)
     outFile = new StreamLogger(outStream, outStream)
   }
-  await writeOutputString(tracker, options, logger, outFile)
+  const duplicateCount = await writeOutputString(
+    tracker,
+    options,
+    logger,
+    outFile
+  )
   if (options.out) {
-    logger.info(`Duplicates written to output file ${options.out}.`)
+    logger.info(
+      `${duplicateCount.toLocaleString()} duplicate files written to output file ${
+        options.out
+      }.`
+    )
   }
 }
 
@@ -47,13 +56,15 @@ async function writeOutputString(
   options: PrintOptions,
   logger: StreamLogger,
   outFile?: StreamLogger
-): Promise<void> {
+): Promise<number> {
+  let duplicateCount = 0
   // if there is an output file use it; otherwise just use stdout
   outFile = outFile ? outFile : logger
   // duplicate content:
   logger.info("Comparing files with identical sizes...")
   for await (const paths of tracker.getFilesWithSameContent(logger)) {
     outFile.info("content identical: " + paths.join(" and "))
+    duplicateCount++
   }
 
   // duplicate names
@@ -64,6 +75,8 @@ async function writeOutputString(
         "content differs with identical name: " +
           pathsWithSameNamesDiffContent.join(" and ")
       )
+      duplicateCount++
     }
   }
+  return duplicateCount
 }
