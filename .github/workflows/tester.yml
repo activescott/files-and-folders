@@ -1,0 +1,41 @@
+name: reusable package tester
+
+on:
+  workflow_call:
+    inputs:
+      package_dir:
+        description: The relative path to the package root directory.
+        required: true
+        type: string
+      node_versions:
+        description: "The node versions to test against as a JSON array provided as a string (e.g. node_versions: '[12, 14, 16]')."
+        required: true
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node: ${{ fromJSON(inputs.node_versions) }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+          cache-dependency-path: ${{ inputs.package_dir }}/package-lock.json
+
+      - name: install dependencies
+        run: |
+          cd ${{ inputs.package_dir }}
+          npm i
+
+      - name: test
+        env:
+          CI_NODE_VERSION: ${{ matrix.node }}
+        run: |
+          cd ${{ inputs.package_dir }}
+          npm run test

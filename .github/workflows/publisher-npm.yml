@@ -1,0 +1,36 @@
+name: reusable package publisher
+
+on:
+  workflow_call:
+    inputs:
+      package_dir:
+        required: true
+        type: string
+
+jobs:
+  publish_package:
+    runs-on: ubuntu-20.04
+    environment: publish
+    # only run the publish on branches that semantic-release will actually do anything with: also see .releaserc.json
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/alpha'
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: v16.x
+
+      #- name: debug publish_package
+      #  uses: actions/bin/debug@master
+
+      - name: publish to npm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd ${{ inputs.package_dir }}
+          npm install
+          npm run build
+          npx semantic-release@19
