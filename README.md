@@ -4,7 +4,8 @@ Utilities to manage files and folders that I wanted. Trying to make them reusabl
 
 ## dedupe-files
 
-[![npm version](https://badge.fury.io/js/dedupe-files.svg)](https://www.npmjs.com/package/dedupe-files)
+[![NPM version](https://img.shields.io/npm/v/dedupe-files.svg)](https://www.npmjs.com/package/dedupe-files)
+[![Node Version](https://img.shields.io/node/v/dedupe-files.svg)](https://github.com/activescott/files-and-folders)
 
 ```sh
 Usage: dedupe-files <command> [options]

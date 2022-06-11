@@ -1,6 +1,7 @@
 {
   "name": "dedupe-files",
   "version": "1.0.0",
+  "description": "Finds all duplicate files across the set of paths and then will **print** them out, **move** them to a directory, or **delete** them. Duplicates are identified by their actual content not their name or other attributes.",
   "main": "dist/es/index.js",
   "types": "dist/es/index.d.ts",
   "type": "module",
@@ -14,8 +15,22 @@
     "dist/**/*",
     "README.md"
   ],
-  "author": "scott@willeke.com",
+  "author": {
+    "name": "Scott Willeke",
+    "email": "scott@willeke.com",
+    "url": "https://scott.willeke.com"
+  },
   "license": "MIT",
+  "keywords": [
+    "cli",
+    "files",
+    "filesystem"
+  ],
+  "repository": "github:activescott/files-and-folders",
+  "homepage": "https://github.com/activescott/files-and-folders/blob/main/packages/dedupe-files/README.md",
+  "bugs": {
+    "url": "https://github.com/activescott/files-and-folders/issues"
+  },
   "dependencies": {
     "commander": "^9.3.0",
     "irritable-iterable": "^1.3.1"
@@ -36,10 +51,6 @@
     "ts-jest": "^28.0.3",
     "typescript": "^4.7.2"
   },
-  "directories": {
-    "lib": "lib"
-  },
-  "description": "",
   "scripts": {
     "build:es": "rm -rfd ./dist/es; ./node_modules/.bin/tsc --project tsconfig.json",
     "build": "rm -rfd ./dist && npm run build:es",

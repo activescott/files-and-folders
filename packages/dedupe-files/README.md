@@ -1,11 +1,11 @@
-[![npm version](https://badge.fury.io/js/dedupe-files.svg)](https://www.npmjs.com/package/dedupe-files)
-[![npm downloads](https://img.shields.io/npm/dt/dedupe-files.svg?logo=npm)](https://www.npmjs.com/package/dedupe-files)
-[![Build Status](https://github.com/activescott/files-and-folders/workflows/build/badge.svg)](https://github.com/activescott/files-and-folders/actions)
-[![License](https://img.shields.io/github/license/activescott/files-and-folders.svg)](https://github.com/activescott/files-and-folders/blob/master/LICENSE)
-
 # dedupe-files
 
-Finds all files that are the same file (by content, or optionally name) across the set of paths and **print** out the duplicates, **move** the duplicates to a specified directory, or **delete** the duplicate.
+Finds all duplicate files across the set of paths and then will **print** them out, **move** them to a directory, or **delete** them. Duplicates are identified by their actual content not their name or other attributes.
+
+[![NPM version](https://img.shields.io/npm/v/dedupe-files.svg)](https://www.npmjs.com/package/dedupe-files)
+[![Node Version](https://img.shields.io/node/v/dedupe-files.svg)](https://github.com/activescott/files-and-folders)
+[![Build Status](https://github.com/activescott/files-and-folders/workflows/build/badge.svg?branch=main)](https://github.com/activescott/files-and-folders/actions)
+[![License](https://img.shields.io/github/license/activescott/files-and-folders.svg)](https://github.com/activescott/files-and-folders/blob/master/LICENSE)
 
 ## Install / Requirements
 
