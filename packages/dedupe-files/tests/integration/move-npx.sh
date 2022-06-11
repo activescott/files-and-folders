@@ -2,7 +2,7 @@
 THISDIR=$(cd $(dirname "$0"); pwd) #this script's directory
 THISSCRIPT=$(basename $0)
 
-TEMP_ROOT=~/Downloads/dedupe-files-temp
+TEMP_ROOT=$(mktemp -d -t dedupe-files-move)
 
 echo "Creating fresh ${TEMP_ROOT}..."
 rm -rf "${TEMP_ROOT}"

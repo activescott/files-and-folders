@@ -7,6 +7,8 @@ import { logTimeTaken } from "./lib/StreamLogger.js"
 import print from "./commands/print.js"
 import { rename } from "node:fs/promises"
 import move, { MoveOptions } from "./commands/move.js"
+import deleteCommand, { DeleteOptions } from "./commands/delete.js"
+import { rm } from "node:fs/promises"
 
 export interface CliProcess {
   argv: string[]
@@ -89,6 +91,30 @@ That is, the duplicates that are moved are the ones that are rooted in the last-
       await logTimeTaken(
         () => move(options, rename, process.stdout, process.stderr),
         "move",
+        process.stdout
+      )
+    })
+
+  program
+    .command("delete")
+    .summary("delete duplicate files")
+    .description("Deletes duplicate files.")
+    .argument("<input_paths...>")
+    .addHelpText(
+      "after",
+      `
+Remarks:
+
+Files in *input_paths* that appear earlier on the command line are considered more "original".
+That is, the duplicates that are deleted are the ones that are rooted in the last-most *input_paths* argument.
+If duplicates are in the same directory tree, then which one is deleted is not deterministic (but it will leave one behind).
+  `
+    )
+    .action(async (input_paths: string[], options: DeleteOptions) => {
+      options = { ...options, input_paths }
+      await logTimeTaken(
+        () => deleteCommand(options, rm, process.stdout, process.stderr),
+        "delete",
         process.stdout
       )
     })
