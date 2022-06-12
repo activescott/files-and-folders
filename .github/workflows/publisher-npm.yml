@@ -4,6 +4,7 @@ on:
   workflow_call:
     inputs:
       package_dir:
+        description: The relative path to the package root directory.
         required: true
         type: string
 

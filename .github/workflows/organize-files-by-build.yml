@@ -1,4 +1,3 @@
-name: builder
 env:
   package_dir: packages/organize-files-by
 
@@ -8,13 +7,13 @@ on:
   push:
     branches: [main, beta, alpha]
     paths:
-      - ${{ format('{0}/**', env.package_dir) }}
+      - packages/organize-files-by/**
       - .github/workflows
 
   pull_request:
     branches: [main, beta, alpha]
     paths:
-      - ${{ format('{0}/**', env.package_dir) }}
+      - packages/organize-files-by/**
       - .github/workflows
 
 jobs:
