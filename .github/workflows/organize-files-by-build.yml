@@ -17,13 +17,13 @@ on:
 
 jobs:
   test:
-    uses: ./tester.yml
+    uses: ./.github/workflows/tester.yml
     with:
       package_dir: ${{ env.package_dir }}
       node_versions: '[16]'
 
   publish:
     needs: [test]
-    uses: ./publisher-npm.yml
+    uses: ./.github/workflows/publisher-npm.yml
     with:
       package_dir: ${{ env.package_dir }}
