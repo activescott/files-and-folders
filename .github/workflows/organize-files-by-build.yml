@@ -9,11 +9,13 @@ on:
     branches: [main, beta, alpha]
     paths:
       - ${{ format('{0}/**', env.package_dir) }}
+      - .github/workflows
 
   pull_request:
     branches: [main, beta, alpha]
     paths:
       - ${{ format('{0}/**', env.package_dir) }}
+      - .github/workflows
 
 jobs:
   test:
