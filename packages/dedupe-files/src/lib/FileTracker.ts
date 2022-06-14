@@ -1,11 +1,12 @@
-import { getFileSize, hashFile, isDirectory } from "./fs.js"
+import { getFileSize, hashFile, isDirectory } from "@activescott/putty/fs"
+import type { StreamLogger } from "@activescott/putty/streams"
 import { basename, resolve } from "node:path"
 import { filter, map } from "irritable-iterable"
 import { cpus, EOL } from "node:os"
-import type { StreamLogger } from "./StreamLogger.js"
 import { opendir } from "node:fs/promises"
 import assert from "node:assert"
 import { humanReadableDataSize } from "./format.js"
+import { preferredFileComparer } from "./preferPath.js"
 
 interface FileInfo {
   path: string
@@ -43,7 +44,7 @@ class FileHasher {
     // ...sort by priority and return only the path
     const filteredPaths = map(this.filePathsByHash, ([, paths]) => paths)
       .filter((paths) => paths.length > 1)
-      .map((files) => files.sort((a, b) => a.priority - b.priority))
+      .map((files) => files.sort(preferredFileComparer))
 
     return filteredPaths
   }

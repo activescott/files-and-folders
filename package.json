@@ -1,0 +1,8 @@
+{
+  "name": "@activescott/files-and-folders",
+  "workspaces": [
+    "packages/putty",
+    "packages/organize-files-by",
+    "packages/dedupe-files"
+  ]
+}

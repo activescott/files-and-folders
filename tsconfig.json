@@ -1,0 +1,15 @@
+{
+  // https://github.com/tsconfig/bases#centralized-recommendations-for-tsconfig-bases
+  "extends": "@tsconfig/node16-strictest-esm/tsconfig.json",
+  "compilerOptions": {
+    // NOTE: module: ES2020 adds support for dynamic imports, and import.meta. - https://www.typescriptlang.org/tsconfig#module
+    // We get it from @tsconfig/node16-strictest-esm/tsconfig.json
+    // moduleResolution: Node16 is necessary for TypeScript to recognize package exports https://github.com/microsoft/TypeScript/issues/33079#issuecomment-1128910470
+    "moduleResolution": "Node16",
+    //"traceResolution": true
+    // below here are relieving some of the "strict" option from the preset:
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitAny": false
+  }
+}

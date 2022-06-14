@@ -1,0 +1,12 @@
+.eslint*
+.husky/**
+.prettier*
+.releaserc.json
+/*.tgz
+/src/
+/scripts/
+/coverage/
+*.test.js
+/test-data/
+/tests/
+tsconfig*

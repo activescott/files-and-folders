@@ -2,6 +2,9 @@
 import { basename } from "node:path"
 import { fileURLToPath } from "url"
 import { Command } from "commander"
+import organize, { OrganizeOptions } from "./lib/organizer.js"
+import { rename } from "node:fs/promises"
+import { StreamLogger } from "@activescott/putty/streams"
 
 export interface CliProcess {
   argv: string[]
@@ -30,11 +33,11 @@ Pattern Syntax
 The pattern option is a required option that specifies the names of folders and the file using a set of placeholders defined with a tags name surrounded in double brace characters like this {{my-tag}}.
 
   Supported tags:
-    name                              The name of the file without extension or directory.
-    ext                               The extension of the file from the last occurrence of the . character to the end of the name.
-    cre-year                          The year portion of the file's creation time.
-    cre-month                         The month portion of the file's creation time.
-    cre-day                           The day portion of the file's creation time.
+    name                           The name of the file without extension or directory.
+    ext                            The extension of the file from the last occurrence of the . character to the end of the name.
+    byear                          The four digit year of the file's birth/creation time according to local time.
+    bmonth                         The zero-based month of the file's birth time according to local time.
+    bdate                          The day of the month (between 1 and 31) for the file's birth time according to local time.
 
   Future tags:
     id3-???
@@ -53,6 +56,16 @@ The pattern option is a required option that specifies the names of folders and 
     )
     .argument("<dest_path>", "path to move organized files to")
     .argument("<input_paths...>", "paths to find the files to be organized")
+    .action(
+      async (
+        dest_path: string,
+        input_paths: string[],
+        options: OrganizeOptions
+      ) => {
+        const logger = new StreamLogger(process.stdout, process.stderr)
+        await organize(logger, rename, dest_path, input_paths, options)
+      }
+    )
 
   await program.parseAsync(process.argv)
 }

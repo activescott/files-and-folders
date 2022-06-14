@@ -1,3 +1,2 @@
-packages/dedupe-files/tests/**/*.sh.out
+node_modules/
 .DS_Store
-packages/dedupe-files/dedupe-files-*.tgz

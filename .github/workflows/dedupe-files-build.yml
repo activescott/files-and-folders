@@ -6,22 +6,24 @@ on:
     paths:
       - packages/dedupe-files/**
       - .github/workflows/**
+      - packages/shared-lib/**
 
   pull_request:
     branches: [main, beta, alpha]
     paths:
       - packages/dedupe-files/**
       - .github/workflows/**
+      - packages/shared-lib/**
 
 jobs:
   test:
-    uses: ./.github/workflows/tester.yml
+    uses: activescott/github-actions-workflows/.github/workflows/npm-tester.yml@v1
     with:
       package_dir: packages/dedupe-files
       node_versions: '[16]'
 
-  publish:
-    needs: [test]
-    uses: ./.github/workflows/publisher-npm.yml
-    with:
-      package_dir: packages/dedupe-files
+#  publish:
+#    needs: [test]
+#    uses: activescott/github-actions-workflows/.github/workflows/npm-publisher.yml@v1
+#    with:
+#      package_dir: packages/dedupe-files

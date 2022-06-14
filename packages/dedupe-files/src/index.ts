@@ -3,7 +3,7 @@ import { basename } from "node:path"
 import { fileURLToPath } from "url"
 import { Command } from "commander"
 import type { PrintOptions } from "./commands/print.js"
-import { logTimeTaken } from "./lib/StreamLogger.js"
+import { logTimeTaken } from "@activescott/putty/streams"
 import print from "./commands/print.js"
 import { rename } from "node:fs/promises"
 import move, { MoveOptions } from "./commands/move.js"
@@ -100,6 +100,7 @@ That is, the duplicates that are moved are the ones that are rooted in the last-
     .summary("delete duplicate files")
     .description("Deletes duplicate files.")
     .argument("<input_paths...>")
+    .option("-n, --dry-run", "show what would have been deleted")
     .addHelpText(
       "after",
       `

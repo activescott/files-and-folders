@@ -2,7 +2,7 @@
 import { Writable, WritableOptions } from "node:stream"
 import { StringDecoder } from "node:string_decoder"
 
-export default class StringWriter extends Writable {
+export class StringWriter extends Writable {
   private _decoder: StringDecoder
   private _data: string
 

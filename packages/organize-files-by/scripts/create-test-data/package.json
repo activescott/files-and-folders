@@ -1,0 +1,12 @@
+{
+  "name": "create-test-data",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "create-test-data.js",
+  "dependencies": {
+    "utimes": "^5.1.1"
+  },
+  "scripts": {
+    "start": "node create-test-data.js"
+  }
+}

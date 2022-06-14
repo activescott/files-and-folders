@@ -1,6 +1,5 @@
 import { FileTracker } from "../lib/FileTracker.js"
-import { StreamLogger } from "../lib/StreamLogger.js"
-import type { StreamLike } from "../lib/StreamLike"
+import { StreamLogger, WritableStreamLike } from "@activescott/putty/streams"
 import { createWriteStream, WriteStream } from "node:fs"
 
 export interface PrintOptions {
@@ -14,8 +13,8 @@ export interface PrintOptions {
 
 export default async function print(
   options: PrintOptions,
-  stdOut: StreamLike,
-  stdErr: StreamLike
+  stdOut: WritableStreamLike,
+  stdErr: WritableStreamLike
 ): Promise<void> {
   if (!options.input_paths) {
     throw new Error("input_paths must be provided")

@@ -42,5 +42,7 @@ describe("cli", () => {
     it.todo("should require dest_path")
     it.todo("should require one input_path")
     it.todo("should accept multiple input_paths")
+    it.todo("should accept option dry-run to delete empty directories")
+    it.todo("should accept option to delete empty directories")
   })
 })

@@ -1,0 +1,9 @@
+{
+  "cSpell.words": [
+    "cdate",
+    "cmonth",
+    "cyear",
+    "repath"
+  ],
+  "js/ts.implicitProjectConfig.module": "NodeNext"
+}
