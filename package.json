@@ -12,6 +12,9 @@
     "build": "npm run build --workspaces",
     "test": "npm run test --workspaces",
     "te": "npm run te --workspaces",
-    "lint-fix": "npm run lint-fix --workspaces"
+    "lint-fix": "npm run lint-fix --workspaces",
+    "clean:node_modules": "rm -rf packages/putty/node_modules; rm -rf packages/organize-files-by/node_modules; rm -rf packages/dedupe-files/node_modules; rm -rf node_modules",
+    "clean:dist": "rm -rf packages/putty/dist; rm -rf packages/organize-files-by/dist; rm -rf packages/dedupe-files/dist",
+    "clean": "npm run 'clean:node_modules' && npm run 'clean:dist'"
   } 
 }

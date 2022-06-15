@@ -66,7 +66,6 @@
     "pretest": "npm run lint && npm run build",
     "watch": "NODE_OPTIONS=--experimental-vm-modules npx jest --watch",
     "dev": "npm run watch",
-    "coverage-publish": "cat ./coverage/lcov.info | coveralls",
-    "prepare": "npm run build"
+    "coverage-publish": "cat ./coverage/lcov.info | coveralls"
   }
 }
