@@ -4,5 +4,14 @@
     "packages/putty",
     "packages/organize-files-by",
     "packages/dedupe-files"
-  ]
+  ],
+  "devDependencies": {
+    "@tsconfig/node16-strictest-esm": "^1.0.2"
+  },
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "te": "npm run te --workspaces",
+    "lint-fix": "npm run lint-fix --workspaces"
+  } 
 }

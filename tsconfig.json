@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   // https://github.com/tsconfig/bases#centralized-recommendations-for-tsconfig-bases
   "extends": "@tsconfig/node16-strictest-esm/tsconfig.json",
   "compilerOptions": {
