@@ -74,6 +74,33 @@ content identical: /Volumes/scott-photos/photos/2014/08/IMG_1285.MOV and /Volume
 
 See [packages/dedupe-files/README.md](packages/dedupe-files/README.md) for more detail.
 
-### organize-files-by (future)
+## organize-files-by (future)
 
 See [packages/organize-files-by/README.md](packages/organize-files-by/README.md) for more detail.
+
+## Contributing 🤝
+
+This is a community project. We invite your participation through issues and pull requests! You can peruse the [contributing guidelines](.github/CONTRIBUTING.md).
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+## Release Process (Deploying to NPM)
+
+We use [semantic-release](https://github.com/semantic-release/semantic-release) to consistently release [semver](https://semver.org/)-compatible versions. This project deploys to multiple [npm distribution tags](https://docs.npmjs.com/cli/dist-tag). Each of the below branches correspond to the following npm distribution tags:
+
+| branch | npm distribution tag |
+| ------ | -------------------- |
+| main   | latest               |
+| beta   | beta                 |
+
+To trigger a release use a [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) conventions on one of the above branches. We use the following adjustments to the Conventional Commit conventions:
+
+- **Scope is required**. The scope must be the full name of the package from the package.json. This helps semantic-release and conventional commits work for a monorepo.
+
+## License 📝
+
+Copyright © 2022 [scott@willeke.com](https://github.com/activescott).
+
+This project is [MIT](LICENSE) licensed.
