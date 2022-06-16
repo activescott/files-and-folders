@@ -7,13 +7,12 @@ on:
   pull_request:
     branches: [main, beta, alpha]
 
-
 jobs:
   test:
     uses: activescott/github-actions-workflows/.github/workflows/npm-tester.yml@v1
     with:
       package_dir: ./
-      node_versions: '[16]'
+      node_versions: "[16]"
 
   publish:
     needs: [test]

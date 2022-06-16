@@ -78,13 +78,19 @@ See [packages/dedupe-files/README.md](packages/dedupe-files/README.md) for more 
 
 See [packages/organize-files-by/README.md](packages/organize-files-by/README.md) for more detail.
 
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
 ## Contributing 🤝
 
 This is a community project. We invite your participation through issues and pull requests! You can peruse the [contributing guidelines](.github/CONTRIBUTING.md).
 
-## Show your support
+### Monorepo Organization
 
-Give a ⭐️ if this project helped you!
+This repository is using [npm workspaces](https://docs.npmjs.com/cli/v7/using-npm/workspaces) to organize a monorepo. Basically this means packages are in `packages/*` but you need to add/remove/update dependencies from the root using `npm ... -w <package_path>` and you need to run most scripts such as `npm run test` from the root of the repo (which has its own package.json with it's own `"scripts"`) which will run the corresponding script for each package.
+
+The monorepo organization also implicates the release process. Essentially you **must** include a scope with your conventional commit and it must be the name of a package.
 
 ## Release Process (Deploying to NPM)
 
