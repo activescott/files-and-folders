@@ -101,9 +101,13 @@ We use [semantic-release](https://github.com/semantic-release/semantic-release) 
 | main   | latest               |
 | beta   | beta                 |
 
-To trigger a release use a [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) conventions on one of the above branches. We use the following adjustments to the Conventional Commit conventions:
+### Commit Message Conventions
 
-- **Scope is required**. The scope must be the full name of the package from the package.json. This helps semantic-release and conventional commits work for a monorepo.
+To trigger a release use a [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) conventions on one of the above branches. We use the following adjustments to the Conventional Commit conventions to release packages from a monorepo:
+
+- **Scope is required**.
+- To **release a package to npm** the scope must be the full name of the package as it appears in the package.json.
+- You can use `npm run commit` from the root of the repo to be guided through the proper commit message... And if you get it wrong don't fret! We can always squash it in a PR! So just do your best :)
 
 ## License 📝
 

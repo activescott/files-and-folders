@@ -23,10 +23,10 @@ jobs:
         if: ${{ github.event_name == 'pull_request' && failure() }}
         uses: andymckay/labeler@1.0.2
         with:
-          add-labels: 'commit-message-rule-violation'
+          add-labels: "commit-message-rule-violation"
 
       - name: label removal when commitlint succeeds
         if: ${{ github.event_name == 'pull_request' && success() }}
         uses: andymckay/labeler@1.0.2
         with:
-          remove-labels: 'commit-message-rule-violation'
+          remove-labels: "commit-message-rule-violation"
