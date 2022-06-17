@@ -1,0 +1,32 @@
+on:
+  #  push:
+  #    branches: [main, beta, alpha]
+
+  pull_request:
+    branches: [main, beta, alpha]
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: commitlint
+        run: |
+          echo "GITHUB_BASE_REF: ${GITHUB_BASE_REF}"
+          echo "GITHUB_EVENT_NAME: ${GITHUB_EVENT_NAME}"
+          echo 
+          npx commitlint --from ${GITHUB_BASE_REF} --to HEAD
+
+      # for andymckay/labeler see https://github.com/marketplace/actions/simple-issue-labeler
+      - name: label when commitlint fails
+        if: ${{ github.event_name == 'pull_request' && failure() }}
+        uses: andymckay/labeler@1.0.2
+        with:
+          add-labels: 'commit-message-rule-violation'
+
+      - name: label removal when commitlint succeeds
+        if: ${{ github.event_name == 'pull_request' && success() }}
+        uses: andymckay/labeler@1.0.2
+        with:
+          remove-labels: 'commit-message-rule-violation'

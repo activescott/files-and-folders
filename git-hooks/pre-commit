@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-# if this fails install it with homebrew or https://github.com/rhysd/actionlint/blob/main/docs/install.md
+# actionlint can be installed with homebrew or a script at https://github.com/rhysd/actionlint/blob/main/docs/install.md
 actionlint
 npm run test --workspaces
