@@ -15,18 +15,21 @@ jobs:
       node_versions: "[16]"
 
   publish-putty:
+    if: ${{ github.event_name != 'pull_request' }}
     needs: [test]
     uses: activescott/github-actions-workflows/.github/workflows/npm-publisher.yml@v2
     with:
       package_dir: packages/putty
 
   publish-dedupe-files:
+    if: ${{ github.event_name != 'pull_request' }}
     needs: [test, publish-putty]
     uses: activescott/github-actions-workflows/.github/workflows/npm-publisher.yml@v2
     with:
       package_dir: packages/dedupe-files
 
   publish-organize-files-by:
+    if: ${{ github.event_name != 'pull_request' }}
     needs: [test, publish-putty]
     uses: activescott/github-actions-workflows/.github/workflows/npm-publisher.yml@v2
     with:

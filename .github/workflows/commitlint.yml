@@ -16,7 +16,7 @@ jobs:
           echo "GITHUB_BASE_REF: ${GITHUB_BASE_REF}"
           echo "GITHUB_EVENT_NAME: ${GITHUB_EVENT_NAME}"
           echo 
-          npx commitlint --from ${GITHUB_BASE_REF} --to HEAD
+          npx commitlint --from ${GITHUB_BASE_REF}
 
       # for andymckay/labeler see https://github.com/marketplace/actions/simple-issue-labeler
       - name: label when commitlint fails
