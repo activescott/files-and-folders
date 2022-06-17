@@ -21,12 +21,12 @@ jobs:
       # for andymckay/labeler see https://github.com/marketplace/actions/simple-issue-labeler
       - name: label when commitlint fails
         if: ${{ github.event_name == 'pull_request' && failure() }}
-        uses: andymckay/labeler@1.0.2
+        uses: andymckay/labeler@1.0.4
         with:
           add-labels: "commit-message-rule-violation"
 
       - name: label removal when commitlint succeeds
         if: ${{ github.event_name == 'pull_request' && success() }}
-        uses: andymckay/labeler@1.0.2
+        uses: andymckay/labeler@1.0.4
         with:
           remove-labels: "commit-message-rule-violation"
