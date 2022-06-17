@@ -15,8 +15,13 @@ jobs:
         run: |
           echo "GITHUB_BASE_REF: ${GITHUB_BASE_REF}"
           echo "GITHUB_EVENT_NAME: ${GITHUB_EVENT_NAME}"
+          echo "GITHUB_SHA: ${GITHUB_SHA}"
+          echo "GITHUB_REF: ${GITHUB_REF}"
+          echo "GITHUB_REF_NAME: ${GITHUB_REF_NAME}"
+          echo git log:
+          git log -10 --pretty='oneline'
           echo 
-          npx commitlint --from ${GITHUB_BASE_REF} --to ${GITHUB_REF}
+          npx commitlint --from ${GITHUB_BASE_REF} --to ${GITHUB_SHA}
 
       # for andymckay/labeler see https://github.com/marketplace/actions/simple-issue-labeler
       - name: label when commitlint fails
