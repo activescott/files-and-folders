@@ -22,33 +22,41 @@ jobs:
         run: |
           npm ci
 
-      - name: commitlint
+      - name: tracing
         run: |
+          echo "github.event_name: ${{ github.event_name }}"
           echo "github.event.pull_request.number: ${{ github.event.pull_request.number }}"
           echo "github.event.pull_request.base.sha: ${{ github.event.pull_request.base.sha }}"
           echo "github.event.pull_request.head.sha: ${{ github.event.pull_request.head.sha }}"
           echo git log:
           git log -10 --pretty='oneline'
-          echo 
+
+      - name: commitlint
+        id: commitlint
+        run: |
           npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+          if $?; then
+            echo "::set-output name=lint_result::FAILURE"
+          else
+            echo "::set-output name=lint_result::SUCCESS"
+          fi
 
       # for andymckay/labeler see https://github.com/marketplace/actions/simple-issue-labeler
       - name: label when commitlint fails
-        if: ${{ github.event_name == 'pull_request' && failure() }}
+        if: ${{ steps.commitlint.outputs.lint_result == 'FAILURE' }}
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "commit-message-rule-violation"
 
       - name: label removal when commitlint succeeds
-        if: ${{ github.event_name == 'pull_request' && success() }}
+        if: ${{ steps.commitlint.outputs.lint_result == 'SUCCESS' }}
         uses: andymckay/labeler@1.0.4
         with:
           remove-labels: "commit-message-rule-violation"
-
       # Comment with GitHub CLI: https://docs.github.com/en/actions/using-workflows/using-github-cli-in-workflows
       # This works but adds the comment for every commit even if new commits are fine. TODO: check for the label and only add the comment if the label doesn't yet exist.
       #- name: comment when commitlint fails
-      #  if: ${{ github.event_name == 'pull_request' && failure() }}
+      #  if: ${{ steps.commitlint.outputs.lint_result == 'FAILURE' }}
       #  run: gh pr comment "$COMMENT_PR" --body "$COMMENT_BODY"
       #  env:
       #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -56,7 +64,7 @@ jobs:
       #    COMMENT_BODY: "👋 Thanks for the PR! A commit message on this PR doesn't follow the conventions at https://github.com/activescott/files-and-folders/tree/main#commit-message-conventions. That might be okay but it may also not publish a package release that you intend to. This is just an FYI and maintainers can help with this though, so don't fret."
       #
       #- name: comment when commitlint succeeds
-      #  if: ${{ github.event_name == 'pull_request' && success() }}
+      #  if: ${{ steps.commitlint.outputs.lint_result == 'SUCCESS' }}
       #  run: gh pr comment "$COMMENT_PR" --body "$COMMENT_BODY"
       #  env:
       #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
