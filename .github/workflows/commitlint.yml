@@ -11,28 +11,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          # https://github.com/actions/checkout#checkout-pull-request-head-commit-instead-of-merge-commit
-          ref: ${{ github.event.pull_request.head.sha }}
+          # https://github.com/actions/checkout#fetch-all-history-for-all-tags-and-branches
           fetch-depth: 0
 
       - name: commitlint
         run: |
-          echo "GITHUB_BASE_REF: ${GITHUB_BASE_REF}"
-          echo "GITHUB_EVENT_NAME: ${GITHUB_EVENT_NAME}"
-          echo "GITHUB_SHA: ${GITHUB_SHA}"
-          echo "GITHUB_REF: ${GITHUB_REF}"
-          echo "GITHUB_REF_NAME: ${GITHUB_REF_NAME}"
+          echo "github.event.pull_request.base.sha: ${{ github.event.pull_request.base.sha }}"
+          echo "github.event.pull_request.head.sha: ${{ github.event.pull_request.head.sha }}"
           echo git log:
           git log -10 --pretty='oneline'
           echo 
-          npx commitlint --from ${GITHUB_BASE_REF} --to ${GITHUB_SHA}
+          npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
 
       # for andymckay/labeler see https://github.com/marketplace/actions/simple-issue-labeler
       - name: label when commitlint fails
         if: ${{ github.event_name == 'pull_request' && failure() }}
         uses: andymckay/labeler@1.0.4
         with:
-          add-labels: 'commit-message-rule-violation'
+          add-labels: "commit-message-rule-violation"
 
       - name: comment when commitlint fails
         if: ${{ github.event_name == 'pull_request' && failure() }}
@@ -50,7 +46,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' && success() }}
         uses: andymckay/labeler@1.0.4
         with:
-          remove-labels: 'commit-message-rule-violation'
+          remove-labels: "commit-message-rule-violation"
 
       - name: comment when commitlint succeeds
         if: ${{ github.event_name == 'pull_request' && success() }}
