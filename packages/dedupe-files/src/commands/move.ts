@@ -1,7 +1,7 @@
 import { join, parse } from "node:path"
-import { exists, isDirectory } from "../lib/fs.js"
-import type { StreamLike } from "../lib/StreamLike.js"
-import { StreamLogger } from "../lib/StreamLogger.js"
+import { exists, isDirectory } from "@activescott/putty/fs"
+import type { WritableStreamLike } from "@activescott/putty/streams"
+import { StreamLogger } from "@activescott/putty/streams"
 import { FileTracker } from "../lib/FileTracker.js"
 
 export type MoveFileFunction = (
@@ -22,8 +22,8 @@ export interface MoveOptions {
 export default async function move(
   options: MoveOptions,
   moveFileImpl: MoveFileFunction,
-  stdOut: StreamLike,
-  stdErr: StreamLike
+  stdOut: WritableStreamLike,
+  stdErr: WritableStreamLike
 ): Promise<void> {
   if (!(await isDirectory(options.out))) {
     throw new Error(

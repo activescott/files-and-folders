@@ -4,7 +4,7 @@ Finds all duplicate files across the set of paths and then will **print** them o
 
 [![NPM version](https://img.shields.io/npm/v/dedupe-files.svg)](https://www.npmjs.com/package/dedupe-files)
 [![Node Version](https://img.shields.io/node/v/dedupe-files.svg)](https://github.com/activescott/files-and-folders)
-[![Build Status](https://github.com/activescott/files-and-folders/workflows/build/badge.svg?branch=main)](https://github.com/activescott/files-and-folders/actions)
+[![Build Status](https://github.com/activescott/files-and-folders/workflows/dedupe-files-build/badge.svg?branch=main)](https://github.com/activescott/files-and-folders/actions?query=workflow%3Adedupe-files-build)
 [![License](https://img.shields.io/github/license/activescott/files-and-folders.svg)](https://github.com/activescott/files-and-folders/blob/master/LICENSE)
 
 ## Install / Requirements

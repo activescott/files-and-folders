@@ -1,69 +1,36 @@
-name: build
-
-# We want pushes to main, beta, and next to trigger a publish to npm for the corresponding npm dist-tag.
-# Any pull request should run all tests.
+# We want pushes to main, beta, and alpha to trigger a publish to npm for the corresponding npm dist-tag.
+# Any pull request targeting deploy branches should run all tests.
 on:
   push:
-    branches: [main, beta, next]
+    branches: [main, beta, alpha]
+
   pull_request:
-    branches: [main]
+    branches: [main, beta, alpha]
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        node: [16]
-        package_dir: [packages/dedupe-files]
+    uses: activescott/github-actions-workflows/.github/workflows/npm-tester.yml@v2
+    with:
+      package_dir: ./
+      node_versions: "[16]"
 
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node }}
-          cache: 'npm'
-          cache-dependency-path: ${{ matrix.package_dir }}/package-lock.json
-
-      - name: install dependencies
-        run: |
-          cd ${{ matrix.package_dir }}
-          npm i
-
-      - name: test
-        env:
-          CI_NODE_VERSION: ${{ matrix.node }}
-        run: |
-          cd ${{ matrix.package_dir }}
-          npm run test
-
-  publish_package:
+  publish-putty:
+    if: ${{ github.event_name != 'pull_request' }}
     needs: [test]
-    runs-on: ubuntu-20.04
-    environment: publish
-    # only run the publish on branches that semantic-release will actually do anything with: also see .releaserc.json
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/alpha'
-    strategy:
-      matrix:
-        package_dir: [packages/dedupe-files]
+    uses: activescott/github-actions-workflows/.github/workflows/npm-publisher.yml@v2
+    with:
+      package_dir: packages/putty
 
-    steps:
-      - uses: actions/checkout@v3
+  publish-dedupe-files:
+    if: ${{ github.event_name != 'pull_request' }}
+    needs: [test, publish-putty]
+    uses: activescott/github-actions-workflows/.github/workflows/npm-publisher.yml@v2
+    with:
+      package_dir: packages/dedupe-files
 
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: v16.x
-
-      #- name: debug publish_package
-      #  uses: actions/bin/debug@master
-
-      - name: publish to npm
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          cd ${{ matrix.package_dir }}
-          npm install
-          npm run build
-          npx semantic-release@19
+  publish-organize-files-by:
+    if: ${{ github.event_name != 'pull_request' }}
+    needs: [test, publish-putty]
+    uses: activescott/github-actions-workflows/.github/workflows/npm-publisher.yml@v2
+    with:
+      package_dir: packages/organize-files-by

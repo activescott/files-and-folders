@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+echo "Running commitlint at '${PWD}' with '${1}'..."
+#npx --no --timing -- commitlint --cwd "${PWD}" --config commitlint.config.cjs --edit "${1}"
+./node_modules/.bin/commitlint --verbose --cwd "${PWD}" --config commitlint.config.cjs --edit "${1}"

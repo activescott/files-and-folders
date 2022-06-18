@@ -1,6 +1,6 @@
 import { jest, it, expect } from "@jest/globals"
 import { relative } from "node:path"
-import StringWriter from "../../tests/support/StringWriter.js"
+import { StringWriter } from "@activescott/putty/streams"
 import type { DeleteFileFunction, DeleteOptions } from "./delete.js"
 import deleteCommand from "./delete.js"
 

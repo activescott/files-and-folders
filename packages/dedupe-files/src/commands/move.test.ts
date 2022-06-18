@@ -1,10 +1,10 @@
 import { jest, it, describe, expect } from "@jest/globals"
 import move, { MoveFileFunction, MoveOptions } from "./move.js"
-import StringWriter from "../../tests/support/StringWriter.js"
+import { StringWriter } from "@activescott/putty/streams"
 import { existsSync, mkdirSync, rmSync, cpSync } from "node:fs"
 import { join } from "node:path"
 import { rename } from "node:fs/promises"
-import { exists } from "../lib/fs.js"
+import { exists } from "@activescott/putty/fs"
 
 describe("destination", () => {
   it("should be a directory", async () => {

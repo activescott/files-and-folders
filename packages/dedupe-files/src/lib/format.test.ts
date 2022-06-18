@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable no-magic-numbers */
 import { it, expect } from "@jest/globals"
-import { humanReadableDataSize } from "./format"
+import { humanReadableDataSize } from "./format.js"
 
 it("should handle KB", () => {
   expect(humanReadableDataSize(10240)).toMatch("10.0 KB")

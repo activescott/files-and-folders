@@ -74,18 +74,43 @@ content identical: /Volumes/scott-photos/photos/2014/08/IMG_1285.MOV and /Volume
 
 See [packages/dedupe-files/README.md](packages/dedupe-files/README.md) for more detail.
 
-### organize-by-date (future)
+## organize-files-by (future)
 
-```
-organize-by-date [dry-run | move dest_path] input_path [input_path...]
-```
+See [packages/organize-files-by/README.md](packages/organize-files-by/README.md) for more detail.
 
-Given a set of input paths, find each file and move them to a destination root organized in a hierarchy by `year/month`. This is hyper useful for photos (among other things).
+## Show your support
 
-Requirements:
+Give a ⭐️ if this project helped you!
 
-- [ ] feat: searches multiple input paths
-- [ ] feat: dry-run support (no action taken on each file, just log it)
-- [ ] feat: action to move file to a provided dest/root path
-- [ ] feat: handles duplicates in the dest root path by deleting detected duplicates (duplicates by content only)
-- [ ] feat: allow specifying a pattern for organization using other attributes of the file (created, modified, photo tags, music tags, etc.)
+## Contributing 🤝
+
+This is a community project. We invite your participation through issues and pull requests! You can peruse the [contributing guidelines](.github/CONTRIBUTING.md).
+
+### Monorepo Organization
+
+This repository is using [npm workspaces](https://docs.npmjs.com/cli/v7/using-npm/workspaces) to organize a monorepo. Basically this means packages are in `packages/*` but you need to add/remove/update dependencies from the root using `npm ... -w <package_path>` and you need to run most scripts such as `npm run test` from the root of the repo (which has its own package.json with it's own `"scripts"`) which will run the corresponding script for each package.
+
+The monorepo organization also implicates the release process. Essentially you **must** include a scope with your conventional commit and it must be the name of a package.
+
+## Release Process (Deploying to NPM)
+
+We use [semantic-release](https://github.com/semantic-release/semantic-release) to consistently release [semver](https://semver.org/)-compatible versions. This project deploys to multiple [npm distribution tags](https://docs.npmjs.com/cli/dist-tag). Each of the below branches correspond to the following npm distribution tags:
+
+| branch | npm distribution tag |
+| ------ | -------------------- |
+| main   | latest               |
+| beta   | beta                 |
+
+### Commit Message Conventions
+
+To trigger a release use a [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) conventions on one of the above branches. We use the following adjustments to the Conventional Commit conventions to release packages from a monorepo:
+
+- **Scope is required**.
+- To **release a package to npm** the scope must be the full name of the package as it appears in the package.json.
+- You can use `npm run commit` from the root of the repo to be guided through the proper commit message... And if you get it wrong don't fret! We can always squash it in a PR! So just do your best :)
+
+## License 📝
+
+Copyright © 2022 [scott@willeke.com](https://github.com/activescott).
+
+This project is [MIT](LICENSE) licensed.
