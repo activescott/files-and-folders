@@ -54,6 +54,10 @@ The pattern option is a required option that specifies the names of folders and 
       "-d, --dry-run",
       "Only prints out what would be moved but doesn't actually move the files."
     )
+    .option(
+      "--delete-empty",
+      "Deletes any empty directories left after moving files"
+    )
     .argument("<dest_path>", "path to move organized files to")
     .argument("<input_paths...>", "paths to find the files to be organized")
     .action(
