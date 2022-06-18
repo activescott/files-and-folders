@@ -36,10 +36,13 @@ jobs:
         run: |
           npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
           if $?; then
-            echo "::set-output name=lint_result::FAILURE"
-          else
+            echo "commitlint exited with success"
             echo "::set-output name=lint_result::SUCCESS"
+          else
+            echo "commitlint exited with failure"
+            echo "::set-output name=lint_result::FAILURE"
           fi
+          exit 0
 
       # for andymckay/labeler see https://github.com/marketplace/actions/simple-issue-labeler
       - name: label when commitlint fails
