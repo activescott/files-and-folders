@@ -13,6 +13,7 @@ jobs:
         with:
           # https://github.com/actions/checkout#checkout-pull-request-head-commit-instead-of-merge-commit
           ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
 
       - name: commitlint
         run: |
@@ -31,10 +32,34 @@ jobs:
         if: ${{ github.event_name == 'pull_request' && failure() }}
         uses: andymckay/labeler@1.0.4
         with:
-          add-labels: "commit-message-rule-violation"
+          add-labels: 'commit-message-rule-violation'
+
+      - name: comment when commitlint fails
+        if: ${{ github.event_name == 'pull_request' && failure() }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.event.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 Thanks for the PR! A commit message on this PR doesn't follow the conventions at https://github.com/activescott/files-and-folders/tree/main#commit-message-conventions. That might be okay but it may also not publish a package release that you intend to. This is just an FYI and maintainers can help with this though, so don't fret.'
+            })
 
       - name: label removal when commitlint succeeds
         if: ${{ github.event_name == 'pull_request' && success() }}
         uses: andymckay/labeler@1.0.4
         with:
-          remove-labels: "commit-message-rule-violation"
+          remove-labels: 'commit-message-rule-violation'
+
+      - name: comment when commitlint succeeds
+        if: ${{ github.event_name == 'pull_request' && success() }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.event.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 Thanks for the PR! Thanks for following our commit message conventions!'
+            })

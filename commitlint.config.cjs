@@ -49,7 +49,7 @@ module.exports = {
     "body-max-line-length": [RULE_DISABLE],
   },
   helpUrl:
-    "https://github.com/activescott/files-and-folders/tree/main#release-process-deploying-to-npm",
+    "https://github.com/activescott/files-and-folders/tree/main#commit-message-conventions",
   prompt: {
     settings: {},
     messages: {
