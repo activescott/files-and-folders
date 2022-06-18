@@ -15,31 +15,37 @@ jobs:
       node_versions: "[16]"
 
   publish-putty:
+    runs-on: ubuntu-20.04
     environment: npm
     if: ${{ github.event_name != 'pull_request' }}
     needs: [test]
-    uses: activescott/github-actions-workflows/.github/workflows/npm-publisher.yml@npm-publisher-v3
-    with:
-      package_dir: packages/putty
-    secrets:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - uses: activescott/github-actions-workflows/.github/workflows/npm-publisher.yml@npm-publisher-v3
+        with:
+          package_dir: packages/putty
+        secrets:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-dedupe-files:
+    runs-on: ubuntu-20.04
     environment: npm
     if: ${{ github.event_name != 'pull_request' }}
     needs: [test, publish-putty]
-    uses: activescott/github-actions-workflows/.github/workflows/npm-publisher.yml@npm-publisher-v3
-    with:
-      package_dir: packages/dedupe-files
-    secrets:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - uses: activescott/github-actions-workflows/.github/workflows/npm-publisher.yml@npm-publisher-v3
+        with:
+          package_dir: packages/dedupe-files
+        secrets:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-organize-files-by:
+    runs-on: ubuntu-20.04
     environment: npm
     if: ${{ github.event_name != 'pull_request' }}
     needs: [test, publish-putty]
-    uses: activescott/github-actions-workflows/.github/workflows/npm-publisher.yml@npm-publisher-v3
-    with:
-      package_dir: packages/organize-files-by
-    secrets:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - uses: activescott/github-actions-workflows/.github/workflows/npm-publisher.yml@npm-publisher-v3
+        with:
+          package_dir: packages/organize-files-by
+        secrets:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
