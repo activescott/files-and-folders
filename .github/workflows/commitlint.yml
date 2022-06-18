@@ -14,6 +14,17 @@ jobs:
           # https://github.com/actions/checkout#fetch-all-history-for-all-tags-and-branches
           fetch-depth: 0
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: install dependencies
+        run: |
+          npm ci
+
       - name: commitlint
         run: |
           echo "github.event.pull_request.base.sha: ${{ github.event.pull_request.base.sha }}"
@@ -28,7 +39,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' && failure() }}
         uses: andymckay/labeler@1.0.4
         with:
-          add-labels: "commit-message-rule-violation"
+          add-labels: 'commit-message-rule-violation'
 
       - name: comment when commitlint fails
         if: ${{ github.event_name == 'pull_request' && failure() }}
@@ -46,7 +57,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' && success() }}
         uses: andymckay/labeler@1.0.4
         with:
-          remove-labels: "commit-message-rule-violation"
+          remove-labels: 'commit-message-rule-violation'
 
       - name: comment when commitlint succeeds
         if: ${{ github.event_name == 'pull_request' && success() }}
