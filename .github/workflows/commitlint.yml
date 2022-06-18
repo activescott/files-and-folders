@@ -39,28 +39,29 @@ jobs:
 
       # for andymckay/labeler see https://github.com/marketplace/actions/simple-issue-labeler
       - name: label when commitlint fails
-        if: ${{ steps.commitlint.conclusion == 'failure' }}
+        if: ${{ steps.commitlint.outcome == 'failure' }}
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "commit-message-rule-violation"
 
       - name: label removal when commitlint succeeds
-        if: ${{ steps.commitlint.conclusion == 'success' }}
+        if: ${{ steps.commitlint.outcome == 'success' }}
         uses: andymckay/labeler@1.0.4
         with:
           remove-labels: "commit-message-rule-violation"
 
       - name: job summary on failure
-        if: ${{ steps.commitlint.conclusion == 'failure' }}
+        if: ${{ steps.commitlint.outcome == 'failure' }}
         run: echo "### [Commit message conventions](https://github.com/activescott/files-and-folders/tree/main#commit-message-conventions) violated! :warning:" >> $GITHUB_STEP_SUMMARY
 
       - name: job summary on success
-        if: ${{ steps.commitlint.conclusion == 'success' }}
+        if: ${{ steps.commitlint.outcome == 'success' }}
         run: echo "### [Commit message conventions](https://github.com/activescott/files-and-folders/tree/main#commit-message-conventions) look good :sunglasses:" >> $GITHUB_STEP_SUMMARY
+
       # Comment with GitHub CLI: https://docs.github.com/en/actions/using-workflows/using-github-cli-in-workflows
       # This works but adds the comment for every commit even if new commits are fine. TODO: check for the label and only add the comment if the label doesn't yet exist.
       #- name: comment when commitlint fails
-      #  if: ${{ steps.commitlint.conclusion == 'failure' }}
+      #  if: ${{ steps.commitlint.outcome == 'failure' }}
       #  run: gh pr comment "$COMMENT_PR" --body "$COMMENT_BODY"
       #  env:
       #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -68,7 +69,7 @@ jobs:
       #    COMMENT_BODY: "👋 Thanks for the PR! A commit message on this PR doesn't follow the conventions at https://github.com/activescott/files-and-folders/tree/main#commit-message-conventions. That might be okay but it may also not publish a package release that you intend to. This is just an FYI and maintainers can help with this though, so don't fret."
       #
       #- name: comment when commitlint succeeds
-      #  if: ${{ steps.commitlint.conclusion == 'success' }}
+      #  if: ${{ steps.commitlint.outcome == 'success' }}
       #  run: gh pr comment "$COMMENT_PR" --body "$COMMENT_BODY"
       #  env:
       #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
