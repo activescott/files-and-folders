@@ -1,7 +1,4 @@
 on:
-  #  push:
-  #    branches: [main, beta, alpha]
-
   pull_request:
     branches: [main, beta, alpha]
 
@@ -35,20 +32,12 @@ jobs:
           echo 
           npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
 
+      # for andymckay/labeler see https://github.com/marketplace/actions/simple-issue-labeler
       - name: label when commitlint fails
         if: ${{ github.event_name == 'pull_request' && failure() }}
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "commit-message-rule-violation"
-
-      # Comment with GitHub CLI: https://docs.github.com/en/actions/using-workflows/using-github-cli-in-workflows
-      - name: comment when commitlint fails
-        if: ${{ github.event_name == 'pull_request' && failure() }}
-        run: gh issue comment "$ISSUE" --body "$COMMENT_BODY"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ISSUE: ${{ github.event.pull_request.html_url }}
-          COMMENT_BODY: "👋 Thanks for the PR! A commit message on this PR doesn't follow the conventions at https://github.com/activescott/files-and-folders/tree/main#commit-message-conventions. That might be okay but it may also not publish a package release that you intend to. This is just an FYI and maintainers can help with this though, so don't fret."
 
       - name: label removal when commitlint succeeds
         if: ${{ github.event_name == 'pull_request' && success() }}
@@ -56,10 +45,19 @@ jobs:
         with:
           remove-labels: "commit-message-rule-violation"
 
-      - name: comment when commitlint succeeds
-        if: ${{ github.event_name == 'pull_request' && success() }}
-        run: gh issue comment "$ISSUE" --body "$COMMENT_BODY"
+      # Comment with GitHub CLI: https://docs.github.com/en/actions/using-workflows/using-github-cli-in-workflows
+      - name: comment when commitlint fails
+        if: ${{ github.event_name == 'pull_request' && failure() }}
+        run: gh pr comment "$COMMENT_PR" --body "$COMMENT_BODY"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ISSUE: ${{ github.event.pull_request.html_url }}
+          COMMENT_PR: ${{ github.event.pull_request.html_url }}
+          COMMENT_BODY: "👋 Thanks for the PR! A commit message on this PR doesn't follow the conventions at https://github.com/activescott/files-and-folders/tree/main#commit-message-conventions. That might be okay but it may also not publish a package release that you intend to. This is just an FYI and maintainers can help with this though, so don't fret."
+
+      - name: comment when commitlint succeeds
+        if: ${{ github.event_name == 'pull_request' && success() }}
+        run: gh pr comment "$COMMENT_PR" --body "$COMMENT_BODY"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENT_PR: ${{ github.event.pull_request.html_url }}
           COMMENT_BODY: "👋 Thanks for the PR and for following our commit message conventions!"
