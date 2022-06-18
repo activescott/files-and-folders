@@ -46,18 +46,19 @@ jobs:
           remove-labels: "commit-message-rule-violation"
 
       # Comment with GitHub CLI: https://docs.github.com/en/actions/using-workflows/using-github-cli-in-workflows
-      - name: comment when commitlint fails
-        if: ${{ github.event_name == 'pull_request' && failure() }}
-        run: gh pr comment "$COMMENT_PR" --body "$COMMENT_BODY"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COMMENT_PR: ${{ github.event.pull_request.html_url }}
-          COMMENT_BODY: "👋 Thanks for the PR! A commit message on this PR doesn't follow the conventions at https://github.com/activescott/files-and-folders/tree/main#commit-message-conventions. That might be okay but it may also not publish a package release that you intend to. This is just an FYI and maintainers can help with this though, so don't fret."
-
-      - name: comment when commitlint succeeds
-        if: ${{ github.event_name == 'pull_request' && success() }}
-        run: gh pr comment "$COMMENT_PR" --body "$COMMENT_BODY"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COMMENT_PR: ${{ github.event.pull_request.html_url }}
-          COMMENT_BODY: "👋 Thanks for the PR and for following our commit message conventions!"
+      # This works but adds the comment for every commit even if new commits are fine. TODO: check for the label and only add the comment if the label doesn't yet exist.
+      #- name: comment when commitlint fails
+      #  if: ${{ github.event_name == 'pull_request' && failure() }}
+      #  run: gh pr comment "$COMMENT_PR" --body "$COMMENT_BODY"
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #    COMMENT_PR: ${{ github.event.pull_request.html_url }}
+      #    COMMENT_BODY: "👋 Thanks for the PR! A commit message on this PR doesn't follow the conventions at https://github.com/activescott/files-and-folders/tree/main#commit-message-conventions. That might be okay but it may also not publish a package release that you intend to. This is just an FYI and maintainers can help with this though, so don't fret."
+      #
+      #- name: comment when commitlint succeeds
+      #  if: ${{ github.event_name == 'pull_request' && success() }}
+      #  run: gh pr comment "$COMMENT_PR" --body "$COMMENT_BODY"
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #    COMMENT_PR: ${{ github.event.pull_request.html_url }}
+      #    COMMENT_BODY: "👋 Thanks for the PR and for following our commit message conventions!"
