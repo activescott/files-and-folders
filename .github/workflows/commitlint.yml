@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16.x
-          cache: 'npm'
+          cache: "npm"
           cache-dependency-path: package-lock.json
 
       - name: install dependencies
@@ -39,7 +39,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' && failure() }}
         uses: andymckay/labeler@1.0.4
         with:
-          add-labels: 'commit-message-rule-violation'
+          add-labels: "commit-message-rule-violation"
 
       - name: comment when commitlint fails
         if: ${{ github.event_name == 'pull_request' && failure() }}
@@ -50,14 +50,14 @@ jobs:
               issue_number: context.event.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks for the PR! A commit message on this PR doesn't follow the conventions at https://github.com/activescott/files-and-folders/tree/main#commit-message-conventions. That might be okay but it may also not publish a package release that you intend to. This is just an FYI and maintainers can help with this though, so don't fret.'
+              body: "👋 Thanks for the PR! A commit message on this PR doesn't follow the conventions at https://github.com/activescott/files-and-folders/tree/main#commit-message-conventions. That might be okay but it may also not publish a package release that you intend to. This is just an FYI and maintainers can help with this though, so don't fret."
             })
 
       - name: label removal when commitlint succeeds
         if: ${{ github.event_name == 'pull_request' && success() }}
         uses: andymckay/labeler@1.0.4
         with:
-          remove-labels: 'commit-message-rule-violation'
+          remove-labels: "commit-message-rule-violation"
 
       - name: comment when commitlint succeeds
         if: ${{ github.event_name == 'pull_request' && success() }}
@@ -68,5 +68,5 @@ jobs:
               issue_number: context.event.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks for the PR! Thanks for following our commit message conventions!'
+              body: "👋 Thanks for the PR and thanks for following our commit message conventions!"
             })
