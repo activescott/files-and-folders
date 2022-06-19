@@ -54,8 +54,10 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --coverage",
     "te": "NODE_OPTIONS=--experimental-vm-modules npx jest",
     "prete": "npm run build",
-    "pretest": "npm run build",
+    "pretest": "npm run build; npm run create-test-data",
+    "create-test-data": "cd ./scripts/create-test-data/; npm i && ./create-test-data.js",
     "watch": "NODE_OPTIONS=--experimental-vm-modules npx jest --watch",
+    "prewatch": "npm run build",
     "dev": "npm run watch",
     "coverage-publish": "cat ./coverage/lcov.info | coveralls"
   }
