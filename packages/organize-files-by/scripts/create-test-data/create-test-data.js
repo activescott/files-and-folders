@@ -35,9 +35,10 @@ const filesToCreate = paths.map((path) => {
 // now write them to test-data dir:
 const thisDir = dirname(fileURLToPath(import.meta.url))
 const rootDir = resolve(thisDir, "../../test-data/test-case-1")
-await rm(rootDir, { recursive: true, force: true })
 
-await mkdir(rootDir)
+await rm(rootDir, { recursive: true, force: true })
+await mkdir(rootDir, { recursive: true })
+
 for (let f of filesToCreate) {
   const absPath = join(rootDir, f.path)
   const parts = parse(absPath)
